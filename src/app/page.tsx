@@ -55,7 +55,7 @@ export default function PaymentOptions() {
             variant="outlined"
             size="large"
             fullWidth
-            onClick={() => console.log("Cada uno paga lo suyo")}
+            onClick={() => handleChangeRoute("payment/split")}
           >
             Cada uno paga lo suyo
           </Button>
