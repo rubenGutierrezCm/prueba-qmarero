@@ -7,13 +7,13 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-export default function StripeProvider({
+export const StripeProvider = ({
   clientSecret,
   children,
 }: {
   clientSecret: string;
   children: React.ReactNode;
-}) {
+}) => {
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
       {children}

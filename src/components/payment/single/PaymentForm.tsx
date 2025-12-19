@@ -7,10 +7,12 @@ import {
 } from "@stripe/react-stripe-js";
 import { Button, CircularProgress, Box } from "@mui/material";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function PaymentForm() {
+export const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,20 +21,25 @@ export default function PaymentForm() {
     if (!stripe || !elements) return;
 
     setLoading(true);
+    setError(null);
 
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/payment/success",
+        return_url: `${window.location.origin}/payment/success`,
       },
       redirect: "if_required",
     });
 
     if (error) {
       setError(error.message || "Error en el pago");
+      setLoading(false);
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      // Pago exitoso, redirigir a la página de éxito
+      router.push("/payment/success");
+    } else {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (

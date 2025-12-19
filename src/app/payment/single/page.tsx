@@ -1,9 +1,9 @@
 "use client";
 
+import { PaymentForm } from "@/components/payment";
+import { StripeProvider } from "@/components/Shared";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import StripeProvider from "./StripeProvider";
-import PaymentForm from "./PaymentForm";
 
 export default function PaySinglePage() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
