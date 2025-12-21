@@ -144,6 +144,7 @@ export const PeopleStep = ({
         <Button
           variant="contained"
           onClick={onContinue}
+          disabled={people.length === 0}
         >
           Continuar
         </Button>

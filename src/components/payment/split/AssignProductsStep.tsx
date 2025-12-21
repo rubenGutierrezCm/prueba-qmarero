@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   Chip,
-  Divider,
   List,
   ListItem,
   ListItemText,
@@ -47,15 +46,9 @@ export const AssignProductsStep = ({
 }: AssignProductsStepProps) => {
   return (
     <Box>
-      <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
-        <Typography variant="h5" gutterBottom sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
-          Asignar productos
+      <Typography variant="body2" color="text.secondary" gutterBottom>
+          *Haz clic en cada producto para asignarlo a las personas
         </Typography>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
-          Haz clic en cada producto para asignarlo a las personas
-        </Typography>
-      </Paper>
-
       <Box
         sx={{
           display: "grid",
@@ -65,11 +58,6 @@ export const AssignProductsStep = ({
       >
         {/* Lista de Items */}
         <Box>
-          <Paper elevation={1} sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Items de la cuenta
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
             <List>
               {bill.items.map((item) => {
                 const assignedQty = getItemAssignedQty(item.id);
@@ -147,16 +135,14 @@ export const AssignProductsStep = ({
                 );
               })}
             </List>
-          </Paper>
         </Box>
 
         {/* Personas y División */}
         <Box>
-          <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-            <Typography variant="h6" gutterBottom>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="h6" textAlign="center" gutterBottom>
               Resumen por persona
             </Typography>
-            <Divider sx={{ mb: 2 }} />
 
             <Box>
               {people.map((person) => {
@@ -236,10 +222,10 @@ export const AssignProductsStep = ({
                 );
               })}
             </Box>
-          </Paper>
+          </Box>
 
           {/* Resumen */}
-          <Paper elevation={2} sx={{ p: 2, bgcolor: "primary.light" }}>
+          <Paper elevation={2} sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
               Resumen
             </Typography>
@@ -268,27 +254,23 @@ export const AssignProductsStep = ({
                 {(totalBill - getTotalAssigned()).toFixed(2)} {bill.currency}
               </Typography>
             </Box>
+          </Paper>
 
-            <Divider sx={{ my: 2 }} />
-
-            <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} gap={2}>
+           <Box display="flex" justifyContent="space-between" mt={3}>
               <Button
                 variant="outlined"
-                fullWidth
                 onClick={onBack}
               >
                 Volver
               </Button>
               <Button
                 variant="contained"
-                fullWidth
                 onClick={onContinue}
                 disabled={!canProceed}
               >
                 Continuar
               </Button>
             </Box>
-          </Paper>
         </Box>
       </Box>
     </Box>

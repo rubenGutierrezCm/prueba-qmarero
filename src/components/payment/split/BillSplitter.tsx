@@ -243,8 +243,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
           calculatePersonTotal={calculatePersonTotal}
           onBack={() => setActiveTab(1)}
           onProceed={() => {
-            // Redirigir a una página de confirmación o inicio
-            window.location.href = "/payment/split";
+            window.location.href = "/payment/split/confirmation";
           }}
         />
       )}

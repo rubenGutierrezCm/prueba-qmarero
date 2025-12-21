@@ -190,17 +190,26 @@ export const ConfirmationStep = ({
 
   return (
     <Box>
-      <Paper elevation={1} sx={{ p: { xs: 2, sm: 4 }, textAlign: "center" }}>
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 2,
+            mb: 4,
+            textAlign: "center",
+            bgcolor: "warning.light",
+            border: "2px solid",
+            borderColor: "warning.main",
+          }}
+        >
         <WarningIcon
-          sx={{ fontSize: { xs: 48, sm: 64 }, color: "warning.main", mb: 2 }}
+          sx={{ fontSize: { xs: 48, sm: 64 }, color: "warning", mb: 2 }}
         />
-        <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
-          Confirmación final
-        </Typography>
         <Typography variant="body1" color="text.secondary" mb={4}>
-          Revisa cuidadosamente la división antes de continuar
+          Revisa cuidadosamente toda la información, se enviará
+           un correo electrónico a cada persona con su enlace de 
+           pago.
         </Typography>
-
+        </Paper>
         <Paper
           variant="outlined"
           sx={{ p: { xs: 2, sm: 3 }, mb: 3, bgcolor: "background.default" }}
@@ -251,30 +260,6 @@ export const ConfirmationStep = ({
           </Box>
         </Paper>
 
-        <Paper
-          variant="outlined"
-          sx={{
-            p: 2,
-            mb: 4,
-            bgcolor: "warning.light",
-            border: "2px solid",
-            borderColor: "warning.main",
-          }}
-        >
-          <Box display="flex" gap={2} alignItems="flex-start" flexDirection={{ xs: 'column', sm: 'row' }}>
-            <WarningIcon color="warning" sx={{ mt: { xs: 0, sm: 0.5 } }} />
-            <Box textAlign="left">
-              <Typography variant="subtitle1" fontWeight="bold">
-                Importante
-              </Typography>
-              <Typography variant="body2">
-                Se enviará un correo electrónico a cada persona con un enlace único para realizar su pago.
-                Asegúrate de que todos los correos sean correctos.
-              </Typography>
-            </Box>
-          </Box>
-        </Paper>
-
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
             {error}
@@ -289,26 +274,21 @@ export const ConfirmationStep = ({
 
         <Box
           display="flex"
-          flexDirection={{ xs: "column", sm: "row" }}
           gap={2}
-          justifyContent="center"
+          justifyContent="space-between"
         >
           <Button
             variant="outlined"
-            size="large"
             onClick={onBack}
             disabled={loading || success}
-            sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
-            Volver a editar
+            Volver
           </Button>
           <Button
             variant="contained"
-            size="large"
             color="primary"
             onClick={handleConfirmAndSendEmails}
             disabled={loading || success}
-            sx={{ width: { xs: "100%", sm: 200 } }}
           >
             {loading ? (
               <CircularProgress size={24} color="inherit" />
@@ -319,7 +299,6 @@ export const ConfirmationStep = ({
             )}
           </Button>
         </Box>
-      </Paper>
     </Box>
   );
 };

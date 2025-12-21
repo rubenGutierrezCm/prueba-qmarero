@@ -50,12 +50,11 @@ export const QuickAssignDialog = ({
   const availableQty = (selectedItem?.qty || 0) - totalAssignedToOthers + originallyAssignedInDialog;
   
   const totalToAssign = Object.values(quickAssignQuantities).reduce(
-    (sum: number, qty) => sum + (typeof qty === 'number' ? qty : 0),
+    (sum: number, qty) => {
+      if (qty === '' || qty === undefined) return sum;
+      return sum + (typeof qty === 'number' ? qty : 0);
+    },
     0
-  );
-  
-  const hasEmptyFields = Object.values(quickAssignQuantities).some(
-    (qty) => qty === '' || qty === undefined
   );
   
   const exceedsAvailable = (totalToAssign as number) > availableQty;
@@ -74,13 +73,10 @@ export const QuickAssignDialog = ({
             <Typography variant="body2" color="text.secondary">
               {bill.items.find((i) => i.id === quickAssignItemId)?.name}
             </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {selectedItem?.qty || 0} unidades totales - {availableQty} disponibles para asignar
-            </Typography>
           </Box>
         )}
       </DialogTitle>
-      <DialogContent sx={{ pb: { xs: 10, sm: 2 } }}>
+      <DialogContent sx={{ pb: 2 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Asigna las cantidades a cada persona:
         </Typography>
@@ -112,7 +108,7 @@ export const QuickAssignDialog = ({
             </Box>
             <TextField
               type="number"
-              size="small"
+              size="medium"
               label="Cantidad"
               value={quickAssignQuantities[person.id] ?? ''}
               onChange={(e) => {
@@ -127,7 +123,7 @@ export const QuickAssignDialog = ({
                 }
               }}
               inputProps={{ min: 0, max: availableQty }}
-              sx={{ width: { xs: 80, sm: 100 } }}
+              sx={{ width: { xs: 100, sm: 120 } }}
             />
           </Box>
         ))}
@@ -159,7 +155,7 @@ export const QuickAssignDialog = ({
       <DialogActions sx={{ 
         p: 2, 
         gap: 1,
-        flexDirection: { xs: 'column', sm: 'row' }
+        justifyContent: "space-between"
       }}>
         <Button onClick={onClose} sx={{ width: { xs: '100%', sm: 'auto' } }}>
           Cancelar
@@ -167,7 +163,7 @@ export const QuickAssignDialog = ({
         <Button
           onClick={onAssign}
           variant="contained"
-          disabled={totalToAssign === 0 || hasEmptyFields || exceedsAvailable}
+          disabled={totalToAssign === 0 || exceedsAvailable}
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
           Asignar
