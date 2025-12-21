@@ -15,6 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import { PersonSplit } from "@/types/bill";
+import { useRouter } from "next/navigation";
 
 interface PeopleStepProps {
   people: PersonSplit[];
@@ -29,6 +30,8 @@ export const PeopleStep = ({
   onRemovePerson,
   onContinue,
 }: PeopleStepProps) => {
+  const router = useRouter();
+  
   return (
     <Box>
       <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 } }}>
@@ -40,7 +43,6 @@ export const PeopleStep = ({
           gap={2}
           mb={3}
         >
-          <Typography variant="h5">Configurar personas</Typography>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -63,13 +65,6 @@ export const PeopleStep = ({
             <Typography variant="body2" color="text.secondary" mb={3}>
               Añade las personas que van a compartir la cuenta
             </Typography>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={onAddPerson}
-            >
-              Añadir primera persona
-            </Button>
           </Box>
         ) : (
           <Box>
@@ -91,7 +86,7 @@ export const PeopleStep = ({
                     <Box
                       display="flex"
                       justifyContent="space-between"
-                      alignItems="flex-start"
+                      alignItems="center"
                     >
                       <Box flex={1}>
                         <Box display="flex" alignItems="center" gap={1} mb={1}>
@@ -107,7 +102,7 @@ export const PeopleStep = ({
                           </Typography>
                         </Box>
                       </Box>
-                      <IconButton
+                        <IconButton
                         size="small"
                         onClick={() => onRemovePerson(person.id)}
                         color="error"
@@ -132,18 +127,27 @@ export const PeopleStep = ({
               <Typography variant="body1">
                 Total: {people.length} persona{people.length !== 1 ? "s" : ""}
               </Typography>
-              <Button
-                variant="contained"
-                onClick={onContinue}
-                size="large"
-                sx={{ width: { xs: '100%', sm: 'auto' } }}
-              >
-                Continuar a asignar productos
-              </Button>
+              {/* 
+              
+              */}
             </Box>
           </Box>
-        )}
+        )}       
       </Paper>
+     <Box display="flex" justifyContent="space-between" mt={3}>
+        <Button
+          variant="outlined"
+          onClick={() => router.push('/')}
+        >
+          volver
+        </Button>
+        <Button
+          variant="contained"
+          onClick={onContinue}
+        >
+          Continuar
+        </Button>
+      </Box>
     </Box>
   );
 };

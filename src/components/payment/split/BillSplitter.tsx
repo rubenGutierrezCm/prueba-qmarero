@@ -3,15 +3,16 @@
 import { useState } from "react";
 import {
   Box,
-  Paper,
   Button,
   TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tabs,
-  Tab,
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
 } from "@mui/material";
 import { Bill, PersonSplit } from "@/types/bill";
 import { PeopleStep } from "./PeopleStep";
@@ -32,7 +33,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   const [openQuickAssign, setOpenQuickAssign] = useState(false);
   const [quickAssignItemId, setQuickAssignItemId] = useState("");
   const [quickAssignQuantities, setQuickAssignQuantities] = useState<
-    Record<string, number>
+    Record<string, number | string>
   >({});
   
   // Generar sessionId único
@@ -41,28 +42,23 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   });
 
   const handleAddPerson = () => {
-    if (newPersonName.trim() && newPersonEmail.trim()) {
-      // Validación básica de email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(newPersonEmail.trim())) {
-        alert("Por favor, ingresa un correo electrónico válido");
-        return;
-      }
-      
-      const newPerson: PersonSplit = {
-        id: `P${Date.now()}`,
-        name: newPersonName.trim(),
-        email: newPersonEmail.trim(),
-        items: [],
-      };
-      setPeople([...people, newPerson]);
-      setNewPersonName("");
-      setNewPersonEmail("");
-      setOpenAddPerson(false);
-    } else {
-      alert("Por favor, completa todos los campos");
-    }
+    const newPerson: PersonSplit = {
+      id: `P${Date.now()}`,
+      name: newPersonName.trim(),
+      email: newPersonEmail.trim(),
+      items: [],
+    };
+    setPeople([...people, newPerson]);
+    setNewPersonName("");
+    setNewPersonEmail("");
+    setOpenAddPerson(false);
   };
+
+  // Validación para habilitar/deshabilitar el botón de añadir
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isNameValid = newPersonName.trim().length > 1;
+  const isEmailValid = newPersonEmail.trim() !== "" && emailRegex.test(newPersonEmail.trim());
+  const canAddPerson = isNameValid && isEmailValid;
 
   const handleRemovePerson = (personId: string) => {
     setPeople(people.filter((p) => p.id !== personId));
@@ -88,21 +84,44 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
       return;
     }
     setQuickAssignItemId(itemId);
-    setQuickAssignQuantities({});
+    
+    // Pre-cargar las cantidades ya asignadas para este producto
+    const existingQuantities: Record<string, number | string> = {};
+    people.forEach((person) => {
+      const personItem = person.items.find((i) => i.itemId === itemId);
+      existingQuantities[person.id] = personItem?.quantity || '';
+    });
+    
+    setQuickAssignQuantities(existingQuantities);
     setOpenQuickAssign(true);
   };
 
   const handleQuickAssign = () => {
     setPeople(
       people.map((person) => {
-        const quantity = quickAssignQuantities[person.id] || 0;
-        if (quantity > 0) {
-          const existingItemIndex = person.items.findIndex(
-            (i) => i.itemId === quickAssignItemId
-          );
+        const quantity = typeof quickAssignQuantities[person.id] === 'number' 
+          ? quickAssignQuantities[person.id] as number
+          : 0;
+        
+        // Remover el item si la cantidad es 0, o actualizar/agregar si es mayor a 0
+        const existingItemIndex = person.items.findIndex(
+          (i) => i.itemId === quickAssignItemId
+        );
+        
+        if (quantity === 0) {
+          // Si la cantidad es 0, eliminar el item
+          if (existingItemIndex >= 0) {
+            return {
+              ...person,
+              items: person.items.filter((i) => i.itemId !== quickAssignItemId),
+            };
+          }
+          return person;
+        } else {
+          // Si la cantidad es mayor a 0, actualizar o agregar
           if (existingItemIndex >= 0) {
             const updatedItems = [...person.items];
-            updatedItems[existingItemIndex].quantity += quantity;
+            updatedItems[existingItemIndex].quantity = quantity;
             return { ...person, items: updatedItems };
           } else {
             return {
@@ -114,7 +133,6 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
             };
           }
         }
-        return person;
       })
     );
     setOpenQuickAssign(false);
@@ -124,11 +142,11 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
 
   const handleQuickAssignQuantityChange = (
     personId: string,
-    value: number
+    value: number | string
   ) => {
     setQuickAssignQuantities((prev) => ({
       ...prev,
-      [personId]: Math.max(0, value),
+      [personId]: value === '' ? '' : Math.max(0, Number(value)),
     }));
   };
 
@@ -161,44 +179,40 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
     0
   );
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
-  const canProceedToStep2 = people.length > 0;
   const canProceedToStep3 = getTotalAssigned() === totalBill;
 
-  return (
-    <Box sx={{ px: { xs: 1, sm: 2, md: 0 } }}>
-      <Paper elevation={1} sx={{ mb: 3 }}>
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          variant="fullWidth"
-          sx={{ borderBottom: 1, borderColor: "divider" }}
-        >
-          <Tab
-            label="1. Personas"
-            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-          />
-          <Tab
-            label="2. Asignar productos"
-            disabled={!canProceedToStep2}
-            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-          />
-          <Tab
-            label="3. Confirmar"
-            disabled={!canProceedToStep3}
-            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-          />
-        </Tabs>
-      </Paper>
+  const steps = [
+    { label: "Configurar personas" },
+    { label: "Asignar productos" },
+    { label: "Confirmar división" },
+  ];
 
-      {activeTab === 0 && (
-        <PeopleStep
-          people={people}
-          onAddPerson={() => setOpenAddPerson(true)}
-          onRemovePerson={handleRemovePerson}
+  return (
+    <Box>
+      {/* Stepper */}
+      <Box sx={{ mb: 3 }}>
+        <Stepper activeStep={activeTab} alternativeLabel>
+          {steps.map((step, index) => (
+            <Step key={step.label} completed={activeTab > index}>
+              <StepLabel />
+            </Step>
+          ))}
+        </Stepper>
+        
+        {/* Descripción del paso actual */}
+        <Box sx={{ textAlign: "center", mt: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            {steps[activeTab].label}
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box sx={{ px: { xs: 1, sm: 2, md: 0 } }}>
+        {activeTab === 0 && (
+          <PeopleStep
+            people={people}
+            onAddPerson={() => setOpenAddPerson(true)}
+            onRemovePerson={handleRemovePerson}
           onContinue={() => setActiveTab(1)}
         />
       )}
@@ -285,6 +299,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
           <Button
             onClick={handleAddPerson}
             variant="contained"
+            disabled={!canAddPerson}
             sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Añadir
@@ -304,6 +319,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
         onQuantityChange={handleQuickAssignQuantityChange}
         onAssign={handleQuickAssign}
       />
+      </Box>
     </Box>
   );
 };

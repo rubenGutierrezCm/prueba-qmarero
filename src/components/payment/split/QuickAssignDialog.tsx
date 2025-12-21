@@ -19,10 +19,10 @@ interface QuickAssignDialogProps {
   bill: Bill;
   people: PersonSplit[];
   quickAssignItemId: string;
-  quickAssignQuantities: Record<string, number>;
+  quickAssignQuantities: Record<string, number | string>;
   getItemAssignedQty: (itemId: string) => number;
   onClose: () => void;
-  onQuantityChange: (personId: string, value: number) => void;
+  onQuantityChange: (personId: string, value: number | string) => void;
   onAssign: () => void;
 }
 
@@ -37,10 +37,28 @@ export const QuickAssignDialog = ({
   onQuantityChange,
   onAssign,
 }: QuickAssignDialogProps) => {
+  const selectedItem = bill.items.find((i) => i.id === quickAssignItemId);
+  const totalAssignedToOthers = getItemAssignedQty(quickAssignItemId);
+  
+  // Calcular cuánto estaba asignado originalmente en este diálogo
+  const originallyAssignedInDialog = people.reduce((sum, person) => {
+    const personItem = person.items.find((i) => i.itemId === quickAssignItemId);
+    return sum + (personItem?.quantity || 0);
+  }, 0);
+  
+  // Las unidades disponibles son: total del item - lo asignado a otros + lo que estaba en este diálogo
+  const availableQty = (selectedItem?.qty || 0) - totalAssignedToOthers + originallyAssignedInDialog;
+  
   const totalToAssign = Object.values(quickAssignQuantities).reduce(
-    (sum, qty) => sum + qty,
+    (sum: number, qty) => sum + (typeof qty === 'number' ? qty : 0),
     0
   );
+  
+  const hasEmptyFields = Object.values(quickAssignQuantities).some(
+    (qty) => qty === '' || qty === undefined
+  );
+  
+  const exceedsAvailable = (totalToAssign as number) > availableQty;
 
   return (
     <Dialog 
@@ -57,11 +75,7 @@ export const QuickAssignDialog = ({
               {bill.items.find((i) => i.id === quickAssignItemId)?.name}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {bill.items.find((i) => i.id === quickAssignItemId)?.qty}{" "}
-              unidades - {getItemAssignedQty(quickAssignItemId)} asignadas -{" "}
-              {(bill.items.find((i) => i.id === quickAssignItemId)?.qty || 0) -
-                getItemAssignedQty(quickAssignItemId)}{" "}
-              disponibles
+              {selectedItem?.qty || 0} unidades totales - {availableQty} disponibles para asignar
             </Typography>
           </Box>
         )}
@@ -100,21 +114,46 @@ export const QuickAssignDialog = ({
               type="number"
               size="small"
               label="Cantidad"
-              value={quickAssignQuantities[person.id] || 0}
-              onChange={(e) =>
-                onQuantityChange(person.id, Number(e.target.value))
-              }
-              inputProps={{ min: 0 }}
+              value={quickAssignQuantities[person.id] ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === '') {
+                  onQuantityChange(person.id, '');
+                } else {
+                  const numValue = Number(value);
+                  if (!isNaN(numValue) && numValue >= 0) {
+                    onQuantityChange(person.id, numValue);
+                  }
+                }
+              }}
+              inputProps={{ min: 0, max: availableQty }}
               sx={{ width: { xs: 80, sm: 100 } }}
             />
           </Box>
         ))}
         <Divider sx={{ my: 2 }} />
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="body2">Total a asignar:</Typography>
-          <Typography variant="body2" fontWeight="bold">
-            {totalToAssign} unidades
-          </Typography>
+        <Box>
+          <Box display="flex" justifyContent="space-between" mb={1}>
+            <Typography variant="body2">Disponibles:</Typography>
+            <Typography variant="body2" fontWeight="bold">
+              {availableQty} unidades
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between">
+            <Typography variant="body2">Total a asignar:</Typography>
+            <Typography 
+              variant="body2" 
+              fontWeight="bold"
+              color={exceedsAvailable ? "error" : "inherit"}
+            >
+              {totalToAssign} unidades
+            </Typography>
+          </Box>
+          {exceedsAvailable && (
+            <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
+              ⚠️ La cantidad asignada excede las unidades disponibles
+            </Typography>
+          )}
         </Box>
       </DialogContent>
       <DialogActions sx={{ 
@@ -128,7 +167,7 @@ export const QuickAssignDialog = ({
         <Button
           onClick={onAssign}
           variant="contained"
-          disabled={totalToAssign === 0}
+          disabled={totalToAssign === 0 || hasEmptyFields || exceedsAvailable}
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
           Asignar

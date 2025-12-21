@@ -37,33 +37,21 @@ export default function SplitBillPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
           <Box>
-            <Typography variant="h4" gutterBottom>
+            <Typography variant="h4" align="center" gutterBottom>
               Dividir Cuenta
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {MOCK_BILL.table.name} • Mesa {MOCK_BILL.table.id}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Atendido por: {MOCK_BILL.table.server}
+            <Box display="flex" alignItems="center" gap="10px">
+              <Typography variant="body2" color="text.secondary">
+              Total cuenta:
             </Typography>
-          </Box>
-          <Box sx={{ textAlign: "right" }}>
-            <Typography variant="body2" color="text.secondary">
-              Total cuenta
-            </Typography>
-            <Typography variant="h4" color="primary">
+            <Typography fontWeight="bold">
               {totalBill.toFixed(2)} {MOCK_BILL.currency}
             </Typography>
-          </Box>
+            </Box>
         </Box>
       </Paper>
 
