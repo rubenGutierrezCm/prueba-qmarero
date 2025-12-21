@@ -25,7 +25,7 @@ export const PaymentMethodHeader = ({
               Total cuenta:
             </Typography>
             <Typography fontWeight="bold">
-              {getTotalBill().toFixed(2)} {MOCK_BILL.currency}
+              {getTotalBill(MOCK_BILL).toFixed(2)} {MOCK_BILL.currency}
             </Typography>
           </Box>
         </Box>

@@ -4,7 +4,7 @@
  */
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Box,
   Paper,
@@ -21,21 +21,20 @@ import {
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import WarningIcon from "@mui/icons-material/Warning";
 import { useRouter } from "next/navigation";
-import { Bill } from "@/types/bill";
 import { saveSession, createPayment } from "@/lib/indexeddb";
 import { generatePaymentEmail } from "@/lib/emailTemplate";
 import { LoadingButton, StatusAlert } from "@/components/ui";
+import { getTotalBill, MOCK_BILL } from "@/lib/mockBill";
 
-interface BillSummaryStepProps {
-  bill: Bill;
-  totalBill: number;
-}
+const CURRENT_BILL = MOCK_BILL;
 
-export const BillSummaryStep = ({
-  bill,
-  totalBill,
-}: BillSummaryStepProps) => {
+
+export const BillSummaryStep = () => {
+
   const router = useRouter();
+
+  const totalBill = useMemo(() => getTotalBill(CURRENT_BILL), []);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({ name: "", email: "" });
@@ -80,19 +79,19 @@ export const BillSummaryStep = ({
       // 1. Save session to IndexedDB
       await saveSession({
         sessionId,
-        bill,
+        bill: CURRENT_BILL,
         people: [{
           id: personId,
           name: name.trim(),
           email: email.trim(),
-          items: [], // Not used for single payment
+          items: [],
           paid: false,
         }],
         createdAt: Date.now(),
       });
 
       // 2. Create payment with all bill items
-      const products = bill.items.map(item => ({
+      const products = CURRENT_BILL.items.map(item => ({
         itemId: item.id,
         itemName: item.name,
         quantity: item.qty,
@@ -105,7 +104,7 @@ export const BillSummaryStep = ({
         personName: name.trim(),
         personEmail: email.trim(),
         amount: totalBill,
-        currency: bill.currency,
+        currency: CURRENT_BILL.currency,
         products,
       });
 
@@ -115,17 +114,17 @@ export const BillSummaryStep = ({
 
       const emailParams = {
         personName: name.trim(),
-        tableName: bill.table.name,
-        tableId: bill.table.id,
-        server: bill.table.server,
-        products: bill.items.map(item => ({
+        tableName: CURRENT_BILL.table.name,
+        tableId: CURRENT_BILL.table.id,
+        server: CURRENT_BILL.table.server,
+        products: CURRENT_BILL.items.map(item => ({
           name: item.name,
           quantity: item.qty,
           unitPrice: item.unitPrice,
           subtotal: item.qty * item.unitPrice,
         })),
         total: totalBill,
-        currency: bill.currency,
+        currency: CURRENT_BILL.currency,
         paymentLink,
       };
 
@@ -136,7 +135,7 @@ export const BillSummaryStep = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           to: email.trim(),
-          subject: `💳 Pago pendiente - ${bill.table.name} (${totalBill.toFixed(2)} ${bill.currency})`,
+          subject: `💳 Pago pendiente - ${CURRENT_BILL.table.name} (${totalBill.toFixed(2)} ${CURRENT_BILL.currency})`,
           html: emailHtml,
           paymentLink,
         }),
@@ -176,7 +175,7 @@ export const BillSummaryStep = ({
           sx={{ fontSize: { xs: 48, sm: 64 }, color: "warning.main", mb: 2 }}
         />
         <Typography variant="body1" color="text.secondary" mb={2}>
-          Revisa cuidadosamente toda la información. Se enviará un correo electrónico con el enlace de pago por el monto total de <strong>{totalBill.toFixed(2)} {bill.currency}</strong>.
+          Revisa cuidadosamente toda la información. Se enviará un correo electrónico con el enlace de pago por el monto total de <strong>{totalBill.toFixed(2)} {CURRENT_BILL.currency}</strong>.
         </Typography>
       </Paper>
 
@@ -191,10 +190,10 @@ export const BillSummaryStep = ({
 
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" color="text.secondary">
-            Mesa: {bill.table.name} ({bill.table.id})
+            Mesa: {CURRENT_BILL.table.name} ({CURRENT_BILL.table.id})
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Atendido por: {bill.table.server}
+            Atendido por: {CURRENT_BILL.table.server}
           </Typography>
         </Box>
 
@@ -211,7 +210,7 @@ export const BillSummaryStep = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {bill.items.map((item) => (
+            {CURRENT_BILL.items.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
                   <Typography variant="body2">{item.name}</Typography>
@@ -223,10 +222,10 @@ export const BillSummaryStep = ({
                 </TableCell>
                 <TableCell align="center">{item.qty}</TableCell>
                 <TableCell align="right">
-                  {item.unitPrice.toFixed(2)} {bill.currency}
+                  {item.unitPrice.toFixed(2)} {CURRENT_BILL.currency}
                 </TableCell>
                 <TableCell align="right" sx={{ fontWeight: "bold" }}>
-                  {(item.qty * item.unitPrice).toFixed(2)} {bill.currency}
+                  {(item.qty * item.unitPrice).toFixed(2)} {CURRENT_BILL.currency}
                 </TableCell>
               </TableRow>
             ))}
@@ -239,7 +238,7 @@ export const BillSummaryStep = ({
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">Total:</Typography>
           <Typography variant="h5" color="primary" fontWeight="bold">
-            {totalBill.toFixed(2)} {bill.currency}
+            {totalBill.toFixed(2)} {CURRENT_BILL.currency}
           </Typography>
         </Box>
       </Paper>

@@ -18,8 +18,8 @@ export const MOCK_BILL: Bill = {
   ],
 };
 
-export const getTotalBill = () => {
-    return MOCK_BILL.items.reduce(
+export const getTotalBill = (bill: Bill) => {
+    return bill.items.reduce(
     (sum, item) => sum + item.qty * item.unitPrice,
     0
   );
