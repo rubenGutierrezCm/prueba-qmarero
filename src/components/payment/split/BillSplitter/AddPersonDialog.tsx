@@ -1,42 +1,56 @@
 /**
  * AddPersonDialog - Dialog component for adding a new person to the bill split
- * Handles form validation and submission
+ * Handles form validation and submission with react-hook-form and Zod
  */
 "use client";
 
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
   Button,
 } from "@mui/material";
+import { personSchema, PersonFormData } from "@/lib/validationSchemas";
+import { TextField } from "@/components/Shared";
 
 interface AddPersonDialogProps {
   open: boolean;
-  name: string;
-  email: string;
-  canSubmit: boolean;
-  onNameChange: (name: string) => void;
-  onEmailChange: (email: string) => void;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (name: string, email: string) => void;
 }
 
 export const AddPersonDialog = ({
   open,
-  name,
-  email,
-  canSubmit,
-  onNameChange,
-  onEmailChange,
   onClose,
   onSubmit,
 }: AddPersonDialogProps) => {
+  const { control, handleSubmit, formState: { errors }, reset } = useForm<PersonFormData>({
+    resolver: zodResolver(personSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+    mode: "onBlur",
+  });
+
+  useEffect(() => {
+    if (!open) {
+      reset();
+    }
+  }, [open, reset]);
+
+  const onSubmitForm = (data: PersonFormData) => {
+    onSubmit(data.name.trim(), data.email.trim());
+    reset();
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && canSubmit) {
-      onSubmit();
+    if (e.key === "Enter") {
+      handleSubmit(onSubmitForm)();
     }
   };
 
@@ -45,21 +59,23 @@ export const AddPersonDialog = ({
       <DialogTitle>Añadir persona</DialogTitle>
       <DialogContent>
         <TextField
+          name="name"
+          control={control}
+          errors={errors}
           autoFocus
           margin="dense"
           label="Nombre completo"
           fullWidth
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
           sx={{ mb: 2 }}
         />
         <TextField
+          name="email"
+          control={control}
+          errors={errors}
           margin="dense"
           label="Correo electrónico"
           type="email"
           fullWidth
-          value={email}
-          onChange={(e) => onEmailChange(e.target.value)}
           onKeyPress={handleKeyPress}
         />
       </DialogContent>
@@ -71,9 +87,8 @@ export const AddPersonDialog = ({
           Cancelar
         </Button>
         <Button
-          onClick={onSubmit}
+          onClick={handleSubmit(onSubmitForm)}
           variant="contained"
-          disabled={!canSubmit}
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
           Añadir

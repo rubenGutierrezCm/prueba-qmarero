@@ -40,9 +40,9 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   /**
    * Handle adding a person
    */
-  const handleAddPerson = () => {
-    const { name, email } = personDialog.submit();
+  const handleAddPerson = (name: string, email: string) => {
     splitter.addPerson(name, email);
+    personDialog.closeDialog();
   };
 
   /**
@@ -60,9 +60,9 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   /**
    * Handle submitting product assignment
    */
-  const handleQuickAssign = () => {
-    const { itemId, quantities } = assignDialog.submit();
-    splitter.assignProducts(itemId, quantities);
+  const handleQuickAssign = (quantities: Record<string, number | string>) => {
+    splitter.assignProducts(assignDialog.itemId, quantities);
+    assignDialog.closeDialog();
   };
 
   return (
@@ -117,11 +117,6 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
         {/* Dialog: Add person */}
         <AddPersonDialog
           open={personDialog.open}
-          name={personDialog.name}
-          email={personDialog.email}
-          canSubmit={personDialog.canSubmit}
-          onNameChange={personDialog.setName}
-          onEmailChange={personDialog.setEmail}
           onClose={personDialog.closeDialog}
           onSubmit={handleAddPerson}
         />
@@ -135,7 +130,6 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
           quickAssignQuantities={assignDialog.quantities}
           getItemAssignedQty={splitter.getItemAssignedQty}
           onClose={assignDialog.closeDialog}
-          onQuantityChange={assignDialog.updateQuantity}
           onAssign={handleQuickAssign}
         />
       </Box>

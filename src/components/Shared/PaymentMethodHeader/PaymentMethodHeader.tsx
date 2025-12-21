@@ -1,8 +1,17 @@
+/**
+ * PaymentMethodHeader - Header component for payment pages
+ * Displays table info and total bill amount
+ */
 import { getTotalBill, MOCK_BILL } from "@/lib/mockBill";
 import { Box, Container, Paper, Typography } from "@mui/material";
 
+/**
+ * Props for PaymentMethodHeader component
+ */
 interface IPaymentMethodHeaderProps {
+  /** Child components to render below header */
   children: React.ReactNode;
+  /** Title to display in header */
   title: string;
 }
 

@@ -1,3 +1,7 @@
+/**
+ * API route for sending payment emails via nodemailer
+ * Uses Gmail SMTP service to send payment link emails to customers
+ */
 import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 

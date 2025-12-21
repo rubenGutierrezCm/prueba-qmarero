@@ -1,3 +1,7 @@
+/**
+ * Theme and cache providers for the application
+ * Wraps children with Material-UI ThemeProvider, CssBaseline, and Emotion cache
+ */
 "use client";
 
 import { ThemeProvider, CssBaseline } from "@mui/material";

@@ -1,3 +1,7 @@
+/**
+ * Payment success page
+ * Displays confirmation message after successful payment
+ */
 "use client";
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";

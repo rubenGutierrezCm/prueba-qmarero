@@ -1,3 +1,7 @@
+/**
+ * API route for creating Stripe payment intents
+ * Creates a new payment intent with automatic payment methods enabled
+ */
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 

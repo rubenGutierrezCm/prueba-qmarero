@@ -4,12 +4,20 @@
  */
 "use client";
 
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemo, useState } from "react";
+import { processSinglePayment } from "@/lib/paymentService";
+import { TextField, WarningBox } from "@/components/Shared";
+import { getTotalBill, MOCK_BILL } from "@/lib/mockBill";
+import { LoadingButton, StatusAlert } from "@/components/ui";
+import { personSchema, PersonFormData } from "@/lib/validationSchemas";
 import {
   Box,
   Paper,
   Typography,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -18,16 +26,8 @@ import {
   Divider,
   Button,
 } from "@mui/material";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import WarningIcon from "@mui/icons-material/Warning";
-import { useRouter } from "next/navigation";
-import { saveSession, createPayment } from "@/lib/indexeddb";
-import { generatePaymentEmail } from "@/lib/emailTemplate";
-import { LoadingButton, StatusAlert } from "@/components/ui";
-import { getTotalBill, MOCK_BILL } from "@/lib/mockBill";
 
 const CURRENT_BILL = MOCK_BILL;
-
 
 export const BillSummaryStep = () => {
 
@@ -35,115 +35,32 @@ export const BillSummaryStep = () => {
 
   const totalBill = useMemo(() => getTotalBill(CURRENT_BILL), []);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState({ name: "", email: "" });
+  const { control, handleSubmit, formState: { errors } } = useForm<PersonFormData>({
+    resolver: zodResolver(personSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+    mode: "onBlur",
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleConfirmAndSendEmail = async () => {
-    const newErrors = { name: "", email: "" };
-    let hasError = false;
-
-    if (!name.trim()) {
-      newErrors.name = "El nombre es obligatorio";
-      hasError = true;
-    }
-
-    if (!email.trim()) {
-      newErrors.email = "El email es obligatorio";
-      hasError = true;
-    } else if (!validateEmail(email)) {
-      newErrors.email = "Email inválido";
-      hasError = true;
-    }
-
-    setErrors(newErrors);
-
-    if (hasError) return;
+  const onSubmit = async (data: PersonFormData) => {
 
     setLoading(true);
     setError(null);
 
     try {
-      // Generate unique IDs
-      const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const personId = `P${Date.now()}`;
-
-      // 1. Save session to IndexedDB
-      await saveSession({
-        sessionId,
+      // Process payment using reusable service
+      await processSinglePayment({
         bill: CURRENT_BILL,
-        people: [{
-          id: personId,
-          name: name.trim(),
-          email: email.trim(),
-          items: [],
-          paid: false,
-        }],
-        createdAt: Date.now(),
+        personName: data.name.trim(),
+        personEmail: data.email.trim(),
+        totalAmount: totalBill,
       });
-
-      // 2. Create payment with all bill items
-      const products = CURRENT_BILL.items.map(item => ({
-        itemId: item.id,
-        itemName: item.name,
-        quantity: item.qty,
-        unitPrice: item.unitPrice,
-      }));
-
-      const paymentId = await createPayment({
-        sessionId,
-        personId,
-        personName: name.trim(),
-        personEmail: email.trim(),
-        amount: totalBill,
-        currency: CURRENT_BILL.currency,
-        products,
-      });
-
-      // 3. Send email with payment link
-      const origin = window.location.origin;
-      const paymentLink = `${origin}/payment/link/${paymentId}`;
-
-      const emailParams = {
-        personName: name.trim(),
-        tableName: CURRENT_BILL.table.name,
-        tableId: CURRENT_BILL.table.id,
-        server: CURRENT_BILL.table.server,
-        products: CURRENT_BILL.items.map(item => ({
-          name: item.name,
-          quantity: item.qty,
-          unitPrice: item.unitPrice,
-          subtotal: item.qty * item.unitPrice,
-        })),
-        total: totalBill,
-        currency: CURRENT_BILL.currency,
-        paymentLink,
-      };
-
-      const emailHtml = generatePaymentEmail(emailParams);
-
-      const response = await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: email.trim(),
-          subject: `💳 Pago pendiente - ${CURRENT_BILL.table.name} (${totalBill.toFixed(2)} ${CURRENT_BILL.currency})`,
-          html: emailHtml,
-          paymentLink,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al enviar el correo");
-      }
 
       setSuccess(true);
       setTimeout(() => {
@@ -160,24 +77,9 @@ export const BillSummaryStep = () => {
   return (
     <Box>
       {/* Warning section */}
-      <Paper
-        variant="outlined"
-        sx={{
-          p: 2,
-          mb: 4,
-          textAlign: "center",
-          bgcolor: "warning.light",
-          border: "2px solid",
-          borderColor: "warning.main",
-        }}
-      >
-        <WarningIcon
-          sx={{ fontSize: { xs: 48, sm: 64 }, color: "warning.main", mb: 2 }}
-        />
-        <Typography variant="body1" color="text.secondary" mb={2}>
-          Revisa cuidadosamente toda la información. Se enviará un correo electrónico con el enlace de pago por el monto total de <strong>{totalBill.toFixed(2)} {CURRENT_BILL.currency}</strong>.
-        </Typography>
-      </Paper>
+      <WarningBox>
+        Revisa cuidadosamente toda la información. Se enviará un correo electrónico con el enlace de la pasarela de pago.
+      </WarningBox>
 
       {/* Bill details */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
@@ -214,11 +116,6 @@ export const BillSummaryStep = () => {
               <TableRow key={item.id}>
                 <TableCell>
                   <Typography variant="body2">{item.name}</Typography>
-                  {item.notes && (
-                    <Typography variant="caption" color="text.secondary">
-                      {item.notes}
-                    </Typography>
-                  )}
                 </TableCell>
                 <TableCell align="center">{item.qty}</TableCell>
                 <TableCell align="right">
@@ -253,23 +150,23 @@ export const BillSummaryStep = () => {
         </Typography>
 
         <TextField
+          name="name"
+          control={control}
+          errors={errors}
           fullWidth
           label="Nombre"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          error={!!errors.name}
-          helperText={errors.name}
           sx={{ mb: 2 }}
+          disabled={loading || success}
         />
 
         <TextField
+          name="email"
+          control={control}
+          errors={errors}
           fullWidth
           label="Email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={!!errors.email}
-          helperText={errors.email}
+          disabled={loading || success}
         />
       </Paper>
 
@@ -292,7 +189,7 @@ export const BillSummaryStep = () => {
         </Button>
         <LoadingButton
           variant="contained"
-          onClick={handleConfirmAndSendEmail}
+          onClick={handleSubmit(onSubmit)}
           disabled={success}
           loading={loading}
           loadingText="Enviando..."

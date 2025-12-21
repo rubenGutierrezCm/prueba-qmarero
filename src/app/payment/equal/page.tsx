@@ -1,3 +1,7 @@
+/**
+ * Equal payment page - Divide bill equally among all people
+ * Each person pays the same amount
+ */
 "use client";
 
 import { MOCK_BILL } from "@/lib/mockBill";

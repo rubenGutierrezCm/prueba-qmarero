@@ -4,6 +4,10 @@
  */
 "use client";
 
+import PersonIcon from "@mui/icons-material/Person";
+import WarningIcon from "@mui/icons-material/Warning";
+import { PersonSplit } from "@/types/bill";
+import { StepNavigation } from "@/components/ui";
 import {
   Box,
   Paper,
@@ -13,10 +17,6 @@ import {
   CardContent,
   Divider,
 } from "@mui/material";
-import WarningIcon from "@mui/icons-material/Warning";
-import PersonIcon from "@mui/icons-material/Person";
-import { PersonSplit } from "@/types/bill";
-import { StepNavigation } from "@/components/ui";
 
 interface AmountPerPersonStepProps {
   people: PersonSplit[];

@@ -1,11 +1,18 @@
+/**
+ * CenteredMessagePage - Full-page centered message component
+ * Used for error states, success messages, and loading screens
+ */
 "use client";
 
 import { Box, Container, Typography } from "@mui/material";
 import { ReactNode } from "react";
 
 interface CenteredMessagePageProps {
+  /** Icon or image to display */
   icon: ReactNode;
+  /** Main title/heading */
   title: string;
+  /** Description text or custom content */
   description: string | ReactNode;
 }
 

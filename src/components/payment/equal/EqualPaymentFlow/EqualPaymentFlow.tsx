@@ -34,9 +34,9 @@ export const EqualPaymentFlow = ({ bill }: EqualPaymentFlowProps) => {
   /**
    * Handle adding a person
    */
-  const handleAddPerson = () => {
-    const { name, email } = personDialog.submit();
+  const handleAddPerson = (name: string, email: string) => {
     equalPayment.addPerson(name, email);
+    personDialog.closeDialog();
   };
 
   return (
@@ -74,11 +74,6 @@ export const EqualPaymentFlow = ({ bill }: EqualPaymentFlowProps) => {
         {/* Dialog: Add person */}
         <AddPersonDialog
           open={personDialog.open}
-          name={personDialog.name}
-          email={personDialog.email}
-          canSubmit={personDialog.canSubmit}
-          onNameChange={personDialog.setName}
-          onEmailChange={personDialog.setEmail}
           onClose={personDialog.closeDialog}
           onSubmit={handleAddPerson}
         />

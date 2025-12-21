@@ -1,3 +1,7 @@
+/**
+ * Home page - Payment options selector
+ * Allows users to choose between single payment, equal split, or custom split
+ */
 "use client";
 
 import { Box, Button, Typography, Stack } from "@mui/material";

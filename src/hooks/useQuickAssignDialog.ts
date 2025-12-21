@@ -1,6 +1,6 @@
 /**
  * useQuickAssignDialog - Custom hook to manage product assignment dialog
- * Handles quantities state and dialog open/close
+ * Simplified version for react-hook-form integration
  */
 "use client";
 
@@ -32,32 +32,11 @@ export const useQuickAssignDialog = () => {
     setQuantities({});
   };
 
-  /**
-   * Update quantity for a specific person
-   */
-  const updateQuantity = (personId: string, value: number | string) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [personId]: value === '' ? '' : Math.max(0, Number(value)),
-    }));
-  };
-
-  /**
-   * Submit the dialog and return quantities
-   */
-  const submit = (): { itemId: string; quantities: Record<string, number | string> } => {
-    const result = { itemId, quantities };
-    closeDialog();
-    return result;
-  };
-
   return {
     open,
     itemId,
     quantities,
     openDialog,
     closeDialog,
-    updateQuantity,
-    submit,
   };
 };

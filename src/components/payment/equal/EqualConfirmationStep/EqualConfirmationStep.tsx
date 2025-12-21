@@ -17,10 +17,9 @@ import {
 } from "@mui/material";
 import { LoadingButton, StatusAlert } from "@/components/ui";
 import PersonIcon from "@mui/icons-material/Person";
-import WarningIcon from "@mui/icons-material/Warning";
 import { PersonSplit, Bill } from "@/types/bill";
-import { saveSession, createPayment } from "@/lib/indexeddb";
-import { generatePaymentEmail } from "@/lib/emailTemplate";
+import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
+import { WarningBox } from "@/components/Shared";
 
 interface EqualConfirmationStepProps {
   people: PersonSplit[];
@@ -52,76 +51,19 @@ export const EqualConfirmationStep = ({
     setError(null);
 
     try {
-      // 1. Save session to IndexedDB
-      await saveSession({
+      // Process payments using reusable service
+      await processMultiplePayments({
         sessionId,
         bill,
-        people: people.map(p => ({ ...p, paid: false })),
-        createdAt: Date.now(),
-      });
-
-      // 2. Create individual payments for each person (equal amounts)
-      const paymentIds: string[] = [];
-      for (const person of people) {
-        // Create a summary product for equal split
-        const products = [{
+        people,
+        getPersonAmount: () => amountPerPerson,
+        getPersonProducts: (): PaymentProduct[] => [{
           itemId: 'equal-split',
           itemName: `Parte igual de la cuenta (${people.length} personas)`,
           quantity: 1,
           unitPrice: amountPerPerson,
-        }];
-
-        const paymentId = await createPayment({
-          sessionId,
-          personId: person.id,
-          personName: person.name,
-          personEmail: person.email,
-          amount: amountPerPerson,
-          currency,
-          products,
-        });
-
-        paymentIds.push(paymentId);
-      }
-
-      // 3. Send emails to each person
-      const origin = window.location.origin;
-      const emailPromises = people.map((person, index) => {
-        const paymentId = paymentIds[index];
-        const paymentLink = `${origin}/payment/link/${paymentId}`;
-
-        // Create email params for equal split
-        const emailParams = {
-          personName: person.name,
-          tableName: bill.table.name,
-          tableId: bill.table.id,
-          server: bill.table.server,
-          products: [{
-            name: `División equitativa de la cuenta`,
-            quantity: 1,
-            unitPrice: amountPerPerson,
-            subtotal: amountPerPerson,
-          }],
-          total: amountPerPerson,
-          currency,
-          paymentLink,
-        };
-
-        const emailHtml = generatePaymentEmail(emailParams);
-
-        return fetch("/api/send-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            to: person.email,
-            subject: `💳 Pago pendiente - ${bill.table.name} (${amountPerPerson.toFixed(2)} ${currency})`,
-            html: emailHtml,
-            paymentLink,
-          }),
-        });
+        }],
       });
-
-      await Promise.all(emailPromises);
 
       setSuccess(true);
       setTimeout(() => {
@@ -138,24 +80,9 @@ export const EqualConfirmationStep = ({
   return (
     <Box>
       {/* Warning section */}
-      <Paper
-        variant="outlined"
-        sx={{
-          p: 2,
-          mb: 4,
-          textAlign: "center",
-          bgcolor: "warning.light",
-          border: "2px solid",
-          borderColor: "warning.main",
-        }}
-      >
-        <WarningIcon
-          sx={{ fontSize: { xs: 48, sm: 64 }, color: "warning.main", mb: 2 }}
-        />
-        <Typography variant="body1" color="text.secondary" mb={2}>
-          Revisa cuidadosamente toda la información. Se enviará un correo electrónico a cada persona con su enlace de pago por un monto igual de <strong>{amountPerPerson.toFixed(2)} {currency}</strong>.
-        </Typography>
-      </Paper>
+      <WarningBox>
+        Revisa cuidadosamente toda la información. Se enviará un correo electrónico a cada persona con su enlace de pago por un monto igual de <strong>{amountPerPerson.toFixed(2)} {currency}</strong>.
+      </WarningBox>
 
       {/* Summary */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>

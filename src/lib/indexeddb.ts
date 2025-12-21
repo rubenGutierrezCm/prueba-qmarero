@@ -133,7 +133,7 @@ export async function createPayment(payment: {
   const db = await getDB();
   const paymentId = `payment_${Date.now()}_${Math.random()
     .toString(36)
-    .substr(2, 9)}`;
+    .substring(2, 11)}`;
 
   const paymentData = {
     paymentId,

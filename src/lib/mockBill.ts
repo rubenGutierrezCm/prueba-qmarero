@@ -1,3 +1,7 @@
+/**
+ * Mock bill data for testing and development
+ * Contains sample restaurant bill with table info and items
+ */
 import { Bill } from "@/types/bill";
 
 export const MOCK_BILL: Bill = {

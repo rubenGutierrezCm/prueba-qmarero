@@ -1,9 +1,14 @@
 /**
  * QuickAssignDialog - Dialog for quickly assigning product quantities to multiple people
  * Allows editing existing assignments and validates against available quantities
+ * Uses react-hook-form with Zod validation for form management
  */
 "use client";
 
+import { useEffect, useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Box,
   Dialog,
@@ -11,12 +16,12 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-  TextField,
   Button,
   Divider,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { Bill, PersonSplit } from "@/types/bill";
+import { TextField } from "@/components/Shared";
 
 interface QuickAssignDialogProps {
   open: boolean;
@@ -26,8 +31,7 @@ interface QuickAssignDialogProps {
   quickAssignQuantities: Record<string, number | string>;
   getItemAssignedQty: (itemId: string) => number;
   onClose: () => void;
-  onQuantityChange: (personId: string, value: number | string) => void;
-  onAssign: () => void;
+  onAssign: (quantities: Record<string, number | string>) => void;
 }
 
 export const QuickAssignDialog = ({
@@ -38,7 +42,6 @@ export const QuickAssignDialog = ({
   quickAssignQuantities,
   getItemAssignedQty,
   onClose,
-  onQuantityChange,
   onAssign,
 }: QuickAssignDialogProps) => {
   const selectedItem = bill.items.find((i) => i.id === quickAssignItemId);
@@ -52,16 +55,61 @@ export const QuickAssignDialog = ({
   
   // Las unidades disponibles son: total del item - lo asignado a otros + lo que estaba en este diálogo
   const availableQty = (selectedItem?.qty || 0) - totalAssignedToOthers + originallyAssignedInDialog;
+
+  // Create dynamic Zod schema based on availableQty
+  const quantityValidationSchema = useMemo(() => {
+    const schemaFields: Record<string, z.ZodType> = {};
+    
+    people.forEach((person) => {
+      schemaFields[person.id] = z
+        .union([z.string(), z.number()])
+        .transform((val) => {
+          if (val === '' || val === undefined) return 0;
+          return typeof val === 'number' ? val : parseInt(String(val)) || 0;
+        })
+        .refine((val) => val >= 0, {
+          message: "No puede ser negativo",
+        })
+        .refine((val) => val <= availableQty, {
+          message: "Excede disponibles",
+        });
+    });
+    
+    return z.object(schemaFields);
+  }, [people, availableQty]);
+
+  type FormValues = z.infer<typeof quantityValidationSchema>;
+
+  const { control, handleSubmit, reset } = useForm<FormValues>({
+    resolver: zodResolver(quantityValidationSchema),
+    defaultValues: quickAssignQuantities as FormValues,
+  });
+
+  // Update form when quantities change externally
+  useEffect(() => {
+    if (open) {
+      reset(quickAssignQuantities);
+    }
+  }, [open, quickAssignQuantities, reset]);
   
-  const totalToAssign = Object.values(quickAssignQuantities).reduce(
-    (sum: number, qty) => {
-      if (qty === '' || qty === undefined) return sum;
-      return sum + (typeof qty === 'number' ? qty : 0);
-    },
-    0
-  );
+  // Use useWatch instead of watch() to avoid React Compiler warning
+  // This allows proper memoization of the component
+  const formValues = useWatch({ control });
+  const totalToAssign = useMemo(() => {
+    return Object.values(formValues).reduce(
+      (sum: number, qty) => {
+        if (qty === '' || qty === undefined) return sum;
+        return sum + (typeof qty === 'number' ? qty : parseInt(String(qty)) || 0);
+      },
+      0
+    );
+  }, [formValues]);
   
   const exceedsAvailable = (totalToAssign as number) > availableQty;
+
+  const handleFormSubmit = (data: FormValues) => {
+    onAssign(data as Record<string, number | string>);
+  };
 
   return (
     <Dialog 
@@ -111,21 +159,12 @@ export const QuickAssignDialog = ({
               <Typography noWrap>{person.name}</Typography>
             </Box>
             <TextField
+              name={person.id as keyof FormValues}
+              control={control}
+              errors={{}}
               type="number"
               size="medium"
               label="Cantidad"
-              value={quickAssignQuantities[person.id] ?? ''}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === '') {
-                  onQuantityChange(person.id, '');
-                } else {
-                  const numValue = Number(value);
-                  if (!isNaN(numValue) && numValue >= 0) {
-                    onQuantityChange(person.id, numValue);
-                  }
-                }
-              }}
               inputProps={{ min: 0, max: availableQty }}
               sx={{ width: { xs: 100, sm: 120 } }}
             />
@@ -165,7 +204,7 @@ export const QuickAssignDialog = ({
           Cancelar
         </Button>
         <Button
-          onClick={onAssign}
+          onClick={handleSubmit(handleFormSubmit)}
           variant="contained"
           disabled={totalToAssign === 0 || exceedsAvailable}
           sx={{ width: { xs: '100%', sm: 'auto' } }}

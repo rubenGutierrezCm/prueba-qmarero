@@ -1,3 +1,7 @@
+/**
+ * Root layout component
+ * Wraps the entire application with theme providers
+ */
 import Providers from "./providers";
 
 export default function RootLayout({

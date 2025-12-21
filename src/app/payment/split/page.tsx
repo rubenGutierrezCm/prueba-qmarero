@@ -1,3 +1,7 @@
+/**
+ * Split bill page - Custom split payment flow
+ * Allows each person to pay for their specific items
+ */
 "use client";
 
 import { MOCK_BILL } from "@/lib/mockBill";

@@ -1,3 +1,7 @@
+/**
+ * Payment link page - Individual payment processing
+ * Displays payment details and Stripe payment form for a specific person
+ */
 "use client";
 
 import { useEffect, useState } from "react";

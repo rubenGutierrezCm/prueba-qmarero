@@ -10,7 +10,7 @@ import { Bill, PersonSplit } from "@/types/bill";
 export const useEqualPayment = (bill: Bill) => {
   const [people, setPeople] = useState<PersonSplit[]>([]);
   const [sessionId] = useState(() => {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   });
 
   const totalBill = bill.items.reduce(
