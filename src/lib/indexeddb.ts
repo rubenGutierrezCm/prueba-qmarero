@@ -1,6 +1,15 @@
+/**
+ * IndexedDB utilities for storing bill splitting sessions and payment records
+ * Uses idb library for Promise-based IndexedDB operations
+ */
+
 import { openDB, DBSchema, IDBPDatabase } from "idb";
 import { Bill, PersonSplit } from "@/types/bill";
 
+/**
+ * Database schema for bill splitter
+ * Contains two stores: sessions and payments
+ */
 interface BillSplitterDB extends DBSchema {
   sessions: {
     key: string;
@@ -40,6 +49,10 @@ interface BillSplitterDB extends DBSchema {
     };
   };
 }
+
+/**
+ * Get or create the IndexedDB database instance
+ */
 
 let dbInstance: IDBPDatabase<BillSplitterDB> | null = null;
 

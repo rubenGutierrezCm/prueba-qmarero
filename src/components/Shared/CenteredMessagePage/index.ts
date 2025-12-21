@@ -1,0 +1,1 @@
+export { CenteredMessagePage } from "./CenteredMessagePage";

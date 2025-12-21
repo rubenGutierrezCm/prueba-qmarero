@@ -1,3 +1,7 @@
+/**
+ * QuickAssignDialog - Dialog for quickly assigning product quantities to multiple people
+ * Allows editing existing assignments and validates against available quantities
+ */
 "use client";
 
 import {

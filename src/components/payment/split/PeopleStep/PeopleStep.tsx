@@ -1,21 +1,21 @@
+/**
+ * PeopleStep - First step of bill splitting wizard
+ * Allows user to add and remove people who will share the bill
+ */
 "use client";
 
 import {
   Box,
   Paper,
-  Typography,
   Button,
-  IconButton,
-  Card,
-  CardContent,
   Divider,
+  Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
-import { PersonSplit } from "@/types/bill";
 import { useRouter } from "next/navigation";
+import { PersonSplit } from "@/types/bill";
+import { PersonCard, EmptyState } from "@/components/ui";
 
 interface PeopleStepProps {
   people: PersonSplit[];
@@ -35,6 +35,7 @@ export const PeopleStep = ({
   return (
     <Box>
       <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 } }}>
+        {/* Add person button */}
         <Box
           display="flex"
           flexDirection={{ xs: "column", sm: "row" }}
@@ -54,20 +55,16 @@ export const PeopleStep = ({
         </Box>
         <Divider sx={{ mb: 3 }} />
 
+        {/* Empty state or people list */}
         {people.length === 0 ? (
-          <Box textAlign="center" py={{ xs: 4, sm: 6 }}>
-            <PersonIcon
-              sx={{ fontSize: { xs: 48, sm: 64 }, color: "text.secondary", mb: 2 }}
-            />
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No hay personas añadidas
-            </Typography>
-            <Typography variant="body2" color="text.secondary" mb={3}>
-              Añade las personas que van a compartir la cuenta
-            </Typography>
-          </Box>
+          <EmptyState
+            icon={<PersonIcon />}
+            title="No hay personas añadidas"
+            description="Añade las personas que van a compartir la cuenta"
+          />
         ) : (
           <Box>
+            {/* People grid */}
             <Box
               sx={{
                 display: "grid",
@@ -81,42 +78,18 @@ export const PeopleStep = ({
               }}
             >
               {people.map((person) => (
-                <Card key={person.id} variant="outlined">
-                  <CardContent>
-                    <Box
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Box flex={1}>
-                        <Box display="flex" alignItems="center" gap={1} mb={1}>
-                          <PersonIcon color="primary" />
-                          <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-                            {person.name}
-                          </Typography>
-                        </Box>
-                        <Box display="flex" alignItems="center" gap={1}>
-                          <EmailIcon fontSize="small" color="action" />
-                          <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-all' }}>
-                            {person.email}
-                          </Typography>
-                        </Box>
-                      </Box>
-                        <IconButton
-                        size="small"
-                        onClick={() => onRemovePerson(person.id)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </CardContent>
-                </Card>
+                <PersonCard
+                  key={person.id}
+                  name={person.name}
+                  email={person.email}
+                  onDelete={() => onRemovePerson(person.id)}
+                />
               ))}
             </Box>
 
             <Divider sx={{ my: 3 }} />
 
+            {/* People count */}
             <Box
               display="flex"
               flexDirection={{ xs: "column", sm: "row" }}
@@ -127,14 +100,13 @@ export const PeopleStep = ({
               <Typography variant="body1">
                 Total: {people.length} persona{people.length !== 1 ? "s" : ""}
               </Typography>
-              {/* 
-              
-              */}
             </Box>
           </Box>
         )}       
       </Paper>
-     <Box display="flex" justifyContent="space-between" mt={3}>
+      
+      {/* Navigation buttons */}
+      <Box display="flex" justifyContent="space-between" mt={3}>
         <Button
           variant="outlined"
           onClick={() => router.push('/')}
@@ -144,7 +116,6 @@ export const PeopleStep = ({
         <Button
           variant="contained"
           onClick={onContinue}
-          disabled={people.length === 0}
         >
           Continuar
         </Button>

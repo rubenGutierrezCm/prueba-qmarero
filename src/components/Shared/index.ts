@@ -1,1 +1,3 @@
-export * from "./StripeProvider"export * from "./CenteredMessagePage";
+export { StripeProvider } from "./StripeProvider/StripeProvider";
+export { CenteredMessagePage } from "./CenteredMessagePage/CenteredMessagePage";
+
