@@ -5,7 +5,8 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { Button, CircularProgress, Box } from "@mui/material";
+import { Box } from "@mui/material";
+import { LoadingButton } from "@/components/ui";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -50,16 +51,17 @@ export const PaymentForm = () => {
         <Box sx={{ color: "error.main", mt: 2 }}>{error}</Box>
       )}
 
-      <Button
-        variant="contained"
+      <LoadingButton
         size="large"
         fullWidth
         onClick={handleSubmit}
-        disabled={loading || !stripe}
+        disabled={!stripe}
+        loading={loading}
+        loadingText="Procesando..."
         sx={{ mt: 3 }}
       >
-        {loading ? <CircularProgress size={24} /> : "Pagar ahora"}
-      </Button>
+        Pagar ahora
+      </LoadingButton>
     </Box>
   );
 }

@@ -21,7 +21,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { getPayment, markPaymentAsPaid } from "@/lib/indexeddb";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Button } from "@mui/material";
+import { LoadingButton } from "@/components/ui";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
@@ -103,16 +103,17 @@ const PaymentFormContent = ({
           {error}
         </Alert>
       )}
-      <Button
-        variant="contained"
+      <LoadingButton
         size="large"
         fullWidth
         onClick={handleSubmit}
-        disabled={loading || !stripe}
+        disabled={!stripe}
+        loading={loading}
+        loadingText="Procesando..."
         sx={{ mt: 3 }}
       >
-        {loading ? <CircularProgress size={24} /> : `Pagar ${paymentData.amount.toFixed(2)} ${paymentData.currency}`}
-      </Button>
+        Pagar {paymentData.amount.toFixed(2)} {paymentData.currency}
+      </LoadingButton>
     </Box>
   );
 };

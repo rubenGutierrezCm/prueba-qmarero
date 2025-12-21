@@ -50,7 +50,14 @@ export default function PaymentOptions() {
           >
             Pagar todo yo
           </Button>
-
+          <Button
+            variant="outlined"
+            size="large"
+            fullWidth
+            onClick={() => handleChangeRoute("payment/equal")}
+          >
+            Dividir entre todos
+          </Button>
           <Button
             variant="outlined"
             size="large"
@@ -58,15 +65,6 @@ export default function PaymentOptions() {
             onClick={() => handleChangeRoute("payment/split")}
           >
             Cada uno paga lo suyo
-          </Button>
-
-          <Button
-            variant="outlined"
-            size="large"
-            fullWidth
-            onClick={() => console.log("Uno paga y luego repartimos")}
-          >
-            Paga uno y luego repartimos
           </Button>
         </Stack>
       </Box>

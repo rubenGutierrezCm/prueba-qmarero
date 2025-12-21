@@ -232,7 +232,7 @@ export const ConfirmationStep = ({
             ) : success ? (
               "✓ Enviados"
             ) : (
-              "Enviar correos"
+              "Confirmar"
             )}
           </Button>
         </Box>
