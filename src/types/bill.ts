@@ -19,6 +19,7 @@ export interface Bill {
 export interface PersonSplit {
   id: string;
   name: string;
+  email: string;
   items: {
     itemId: string;
     quantity: number;

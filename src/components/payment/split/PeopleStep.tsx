@@ -13,6 +13,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
+import EmailIcon from "@mui/icons-material/Email";
 import { PersonSplit } from "@/types/bill";
 
 interface PeopleStepProps {
@@ -90,13 +91,21 @@ export const PeopleStep = ({
                     <Box
                       display="flex"
                       justifyContent="space-between"
-                      alignItems="center"
+                      alignItems="flex-start"
                     >
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <PersonIcon color="primary" />
-                        <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-                          {person.name}
-                        </Typography>
+                      <Box flex={1}>
+                        <Box display="flex" alignItems="center" gap={1} mb={1}>
+                          <PersonIcon color="primary" />
+                          <Typography variant="h6" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                            {person.name}
+                          </Typography>
+                        </Box>
+                        <Box display="flex" alignItems="center" gap={1}>
+                          <EmailIcon fontSize="small" color="action" />
+                          <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-all' }}>
+                            {person.email}
+                          </Typography>
+                        </Box>
                       </Box>
                       <IconButton
                         size="small"

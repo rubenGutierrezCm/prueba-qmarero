@@ -27,23 +27,40 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   const [activeTab, setActiveTab] = useState(0);
   const [people, setPeople] = useState<PersonSplit[]>([]);
   const [newPersonName, setNewPersonName] = useState("");
+  const [newPersonEmail, setNewPersonEmail] = useState("");
   const [openAddPerson, setOpenAddPerson] = useState(false);
   const [openQuickAssign, setOpenQuickAssign] = useState(false);
   const [quickAssignItemId, setQuickAssignItemId] = useState("");
   const [quickAssignQuantities, setQuickAssignQuantities] = useState<
     Record<string, number>
   >({});
+  
+  // Generar sessionId único
+  const [sessionId] = useState(() => {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  });
 
   const handleAddPerson = () => {
-    if (newPersonName.trim()) {
+    if (newPersonName.trim() && newPersonEmail.trim()) {
+      // Validación básica de email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newPersonEmail.trim())) {
+        alert("Por favor, ingresa un correo electrónico válido");
+        return;
+      }
+      
       const newPerson: PersonSplit = {
         id: `P${Date.now()}`,
         name: newPersonName.trim(),
+        email: newPersonEmail.trim(),
         items: [],
       };
       setPeople([...people, newPerson]);
       setNewPersonName("");
+      setNewPersonEmail("");
       setOpenAddPerson(false);
+    } else {
+      alert("Por favor, completa todos los campos");
     }
   };
 
@@ -151,11 +168,6 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   const canProceedToStep2 = people.length > 0;
   const canProceedToStep3 = getTotalAssigned() === totalBill;
 
-  const handleProceedToPayment = () => {
-    // TODO: Implementar lógica de pago
-    console.log("Proceder al pago", { people, totalBill });
-  };
-
   return (
     <Box sx={{ px: { xs: 1, sm: 2, md: 0 } }}>
       <Paper elevation={1} sx={{ mb: 3 }}>
@@ -212,16 +224,25 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
           people={people}
           totalBill={totalBill}
           currency={bill.currency}
+          bill={bill}
+          sessionId={sessionId}
           calculatePersonTotal={calculatePersonTotal}
           onBack={() => setActiveTab(1)}
-          onProceed={handleProceedToPayment}
+          onProceed={() => {
+            // Redirigir a una página de confirmación o inicio
+            window.location.href = "/payment/split";
+          }}
         />
       )}
 
       {/* Dialog: Añadir persona */}
       <Dialog
         open={openAddPerson}
-        onClose={() => setOpenAddPerson(false)}
+        onClose={() => {
+          setOpenAddPerson(false);
+          setNewPersonName("");
+          setNewPersonEmail("");
+        }}
         maxWidth="sm"
         fullWidth
       >
@@ -230,10 +251,19 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
           <TextField
             autoFocus
             margin="dense"
-            label="Nombre"
+            label="Nombre completo"
             fullWidth
             value={newPersonName}
             onChange={(e) => setNewPersonName(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            label="Correo electrónico"
+            type="email"
+            fullWidth
+            value={newPersonEmail}
+            onChange={(e) => setNewPersonEmail(e.target.value)}
             onKeyPress={(e) => {
               if (e.key === "Enter") {
                 handleAddPerson();
@@ -243,7 +273,11 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
         </DialogContent>
         <DialogActions sx={{ p: 2, gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
           <Button
-            onClick={() => setOpenAddPerson(false)}
+            onClick={() => {
+              setOpenAddPerson(false);
+              setNewPersonName("");
+              setNewPersonEmail("");
+            }}
             sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
             Cancelar
