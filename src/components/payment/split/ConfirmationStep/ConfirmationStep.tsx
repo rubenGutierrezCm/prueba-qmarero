@@ -12,7 +12,6 @@ import {
   Button,
   Divider,
   CircularProgress,
-  Alert,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import WarningIcon from "@mui/icons-material/Warning";
@@ -20,6 +19,7 @@ import { PersonSplit } from "@/types/bill";
 import { saveSession, createPayment } from "@/lib/indexeddb";
 import { Bill } from "@/types/bill";
 import { generatePaymentEmail, createEmailParams } from "@/lib/emailTemplate";
+import { StatusAlert } from "@/components/ui";
 
 interface ConfirmationStepProps {
   people: PersonSplit[];
@@ -197,17 +197,11 @@ export const ConfirmationStep = ({
           </Box>
         </Paper>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            ¡Correos enviados exitosamente! Cada persona recibirá su enlace de pago.
-          </Alert>
-        )}
+        <StatusAlert
+          error={error}
+          success={success}
+          successMessage="¡Correos enviados exitosamente! Cada persona recibirá su enlace de pago."
+        />
 
         <Box
           display="flex"

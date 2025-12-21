@@ -8,7 +8,6 @@ import {
   Typography,
   Box,
   CircularProgress,
-  Alert,
   Divider,
   Table,
   TableBody,
@@ -21,7 +20,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { getPayment, markPaymentAsPaid } from "@/lib/indexeddb";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { LoadingButton } from "@/components/ui";
+import { LoadingButton, StatusAlert } from "@/components/ui";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
@@ -98,11 +97,7 @@ const PaymentFormContent = ({
   return (
     <Box>
       <PaymentElement />
-      {error && (
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
-        </Alert>
-      )}
+      <StatusAlert error={error} sx={{ mt: 2 }} />
       <LoadingButton
         size="large"
         fullWidth
@@ -199,7 +194,7 @@ export default function PaymentLinkPage() {
   if (error) {
     return (
       <Container maxWidth="md" sx={{ py: 8 }}>
-        <Alert severity="error">{error}</Alert>
+        <StatusAlert error={error} />
       </Container>
     );
   }

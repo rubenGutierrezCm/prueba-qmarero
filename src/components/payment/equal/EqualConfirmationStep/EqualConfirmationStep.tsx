@@ -11,14 +11,12 @@ import {
   Typography,
   Button,
   Divider,
-  Alert,
   List,
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { LoadingButton } from "@/components/ui";
+import { LoadingButton, StatusAlert } from "@/components/ui";
 import PersonIcon from "@mui/icons-material/Person";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningIcon from "@mui/icons-material/Warning";
 import { PersonSplit, Bill } from "@/types/bill";
 import { saveSession, createPayment } from "@/lib/indexeddb";
@@ -208,17 +206,11 @@ export const EqualConfirmationStep = ({
       </Paper>
 
       {/* Status messages */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {success && (
-        <Alert severity="success" icon={<CheckCircleIcon />} sx={{ mb: 3 }}>
-          ¡Correos enviados exitosamente! Redirigiendo...
-        </Alert>
-      )}
+      <StatusAlert
+        error={error}
+        success={success}
+        successMessage="¡Correos enviados exitosamente! Redirigiendo..."
+      />
 
       {/* Actions */}
       <Box display="flex" justifyContent="space-between" gap={2}>
