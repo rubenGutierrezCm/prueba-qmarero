@@ -1,1 +1,1 @@
-export * from "./StripeProvider"
+export * from "./StripeProvider"export * from "./CenteredMessagePage";
