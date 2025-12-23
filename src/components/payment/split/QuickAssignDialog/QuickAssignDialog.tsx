@@ -201,7 +201,7 @@ export const QuickAssignDialog = ({
               {totalToAssign} {t('products.units')}
             </Typography>
           </Box>
-          {exceedsAvailable && (
+          {exceedsAvailable && open && (
             <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
               ⚠️ {t('products.exceedsAvailable')}
             </Typography>

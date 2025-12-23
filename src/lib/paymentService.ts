@@ -47,6 +47,7 @@ export interface EmailParams {
   total: number;
   currency: string;
   paymentLink: string;
+  language?: string;
 }
 
 /**
@@ -57,12 +58,14 @@ export interface EmailParams {
  * 3. Sends email with payment details and link
  * @param params - Payment creation parameters
  * @param emailParams - Email template parameters (without payment link)
+ * @param language - Language for email template (es, en, fr)
  * @returns Promise resolving to the created payment ID
  * @throws Error if email sending fails
  */
 export async function createPaymentAndSendEmail(
   params: CreatePaymentParams,
-  emailParams: Omit<EmailParams, "paymentLink">
+  emailParams: Omit<EmailParams, "paymentLink">,
+  language = 'es'
 ): Promise<string> {
   // 1. Create payment in IndexedDB
   const paymentId = await createPayment({
@@ -83,6 +86,7 @@ export async function createPaymentAndSendEmail(
   const emailHtml = generatePaymentEmail({
     ...emailParams,
     paymentLink,
+    language,
   });
 
   // 4. Send email
@@ -118,6 +122,9 @@ export async function processSinglePayment(params: {
   totalAmount: number;
 }): Promise<{ sessionId: string; paymentId: string }> {
   const { bill, personName, personEmail, totalAmount } = params;
+
+  // Get current language from localStorage or default to 'es'
+  const language = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'es' : 'es';
 
   // Generate unique IDs
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
@@ -172,7 +179,8 @@ export async function processSinglePayment(params: {
       currency: bill.currency,
       products,
     },
-    emailParams
+    emailParams,
+    language
   );
 
   return { sessionId, paymentId };
@@ -193,6 +201,9 @@ export async function processMultiplePayments(params: {
   getPersonProducts: (person: PersonSplit) => PaymentProduct[];
 }): Promise<string[]> {
   const { sessionId, bill, people, getPersonAmount, getPersonProducts } = params;
+
+  // Get current language from localStorage or default to 'es'
+  const language = typeof window !== 'undefined' ? localStorage.getItem('i18nextLng') || 'es' : 'es';
 
   // 1. Save session to IndexedDB
   await saveSession({
@@ -234,7 +245,8 @@ export async function processMultiplePayments(params: {
         currency: bill.currency,
         products,
       },
-      emailParams
+      emailParams,
+      language
     );
 
     paymentIds.push(paymentId);

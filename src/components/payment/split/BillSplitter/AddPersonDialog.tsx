@@ -43,17 +43,36 @@ export const AddPersonDialog = ({
       email: "",
     },
     mode: "onSubmit",
+    reValidateMode: "onSubmit",
   });
 
   useEffect(() => {
     if (!open) {
-      reset();
+      // Reset form completely including validation errors
+      reset({
+        name: "",
+        email: "",
+      });
     }
   }, [open, reset]);
 
   const onSubmitForm = (data: PersonFormData) => {
     onSubmit(data.name.trim(), data.email.trim());
-    reset();
+    // Reset form with default values and clear all errors
+    reset(
+      {
+        name: "",
+        email: "",
+      },
+      {
+        keepErrors: false,
+        keepDirty: false,
+        keepIsSubmitted: false,
+        keepTouched: false,
+        keepIsValid: false,
+        keepSubmitCount: false,
+      }
+    );
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -63,7 +82,13 @@ export const AddPersonDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="sm" 
+      fullWidth
+      key={open ? 'open' : 'closed'}
+    >
       <DialogTitle>{t('people.addPerson')}</DialogTitle>
       <DialogContent>
         <TextField

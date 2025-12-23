@@ -66,7 +66,7 @@ export const BillSummaryStep = () => {
 
       setSuccess(true);
       setTimeout(() => {
-        router.push("/");
+        router.push("/email/sent?method=single");
       }, 2000);
 
     } catch (err) {

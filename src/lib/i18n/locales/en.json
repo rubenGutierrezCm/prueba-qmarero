@@ -80,8 +80,7 @@
     "amountPerPerson": "Amount per person",
     "peopleWillPay": "People who will pay",
     "amountToPay": "Amount to pay",
-    "sendEmailsAndProcess": "Send emails and process",
-    "reviewEqualAmount": "Review all information carefully. An email will be sent to each person with their payment link for an equal amount of {{amount}} {{currency}}."
+    "sendEmailsAndProcess": "Send emails and process"
   },
   "stepper": {
     "configurePeople": "Configure people",
@@ -92,6 +91,8 @@
   "success": {
     "emailsSent": "Emails sent!",
     "emailsSentDescription": "The emails have been sent successfully. Each person will receive a unique link to make their payment.",
+    "emailSent": "Email sent!",
+    "emailSentDescription": "The email has been sent successfully. You will receive a unique link to make your payment.",
     "title": "Payment successful!",
     "description": "Your payment has been processed successfully. You will receive a confirmation email shortly."
   }

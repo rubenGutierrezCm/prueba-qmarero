@@ -25,6 +25,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { getPayment, markPaymentAsPaid } from "@/lib/indexeddb";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { LoadingButton, StatusAlert } from "@/components/ui";
+import { useTranslation } from 'react-i18next';
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
@@ -58,6 +59,7 @@ const PaymentFormContent = ({
   clientSecret: string;
   onSuccess: () => void;
 }) => {
+  const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -72,7 +74,7 @@ const PaymentFormContent = ({
     try {
       const { error: submitError } = await elements.submit();
       if (submitError) {
-        setError(submitError.message || "Form error");
+        setError(submitError.message || t('payment.errorProcessing'));
         setLoading(false);
         return;
       }
@@ -83,7 +85,7 @@ const PaymentFormContent = ({
       });
 
       if (result.error) {
-        setError(result.error.message || "Payment error");
+        setError(result.error.message || t('payment.errorProcessing'));
         setLoading(false);
       } else if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
         // Mark as paid in IndexedDB
@@ -93,7 +95,7 @@ const PaymentFormContent = ({
         setLoading(false);
       }
     } catch {
-      setError("Unexpected error processing payment");
+      setError(t('payment.errorProcessing'));
       setLoading(false);
     }
   };
@@ -108,16 +110,17 @@ const PaymentFormContent = ({
         onClick={handleSubmit}
         disabled={!stripe}
         loading={loading}
-        loadingText="Processing..."
+        loadingText={t('common.sending')}
         sx={{ mt: 3 }}
       >
-        Pay {paymentData.amount.toFixed(2)} {paymentData.currency}
+        {t('common.confirm')} {paymentData.amount.toFixed(2)} {paymentData.currency}
       </LoadingButton>
     </Box>
   );
 };
 
 export default function PaymentLinkPage() {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const paymentId = params.paymentId as string;
@@ -134,7 +137,7 @@ export default function PaymentLinkPage() {
         const payment = await getPayment(paymentId);
         
         if (!payment) {
-          setError("Payment not found");
+          setError(t('payment.errorProcessing'));
           setLoading(false);
           return;
         }
@@ -159,21 +162,21 @@ export default function PaymentLinkPage() {
         });
 
         if (!response.ok) {
-          throw new Error("Error creating payment intent");
+          throw new Error(t('payment.errorProcessing'));
         }
 
         const data = await response.json();
         setClientSecret(data.clientSecret);
       } catch (err) {
         console.error("Error:", err);
-        setError("Error loading payment data");
+        setError(t('payment.errorProcessing'));
       } finally {
         setLoading(false);
       }
     };
 
     loadPaymentData();
-  }, [paymentId]);
+  }, [paymentId, t]);
 
   const handlePaymentSuccess = () => {
     setPaymentSuccess(true);
@@ -188,7 +191,7 @@ export default function PaymentLinkPage() {
         <Box textAlign="center">
           <CircularProgress />
           <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading payment data...
+            {t('common.loading')}
           </Typography>
         </Box>
       </Container>
@@ -209,18 +212,14 @@ export default function PaymentLinkPage() {
         <Paper elevation={2} sx={{ p: 4, textAlign: "center" }}>
           <CheckCircleIcon sx={{ fontSize: 80, color: "success.main", mb: 2 }} />
           <Typography variant="h4" gutterBottom>
-            Payment completed!
+            {t('success.title')}
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={3}>
-            Thank you {paymentData.personName}, your payment of{" "}
-            <strong>
-              {paymentData.amount.toFixed(2)} {paymentData.currency}
-            </strong>{" "}
-            has been processed successfully.
+            {t('success.description')}
           </Typography>
           {paymentData.paidAt && (
             <Typography variant="body2" color="text.secondary">
-              Paid on {new Date(paymentData.paidAt).toLocaleString()}
+              {new Date(paymentData.paidAt).toLocaleString()}
             </Typography>
           )}
         </Paper>
@@ -233,53 +232,55 @@ export default function PaymentLinkPage() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="md" sx={{ py: { xs: 2, sm: 4 } }}>
       <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 } }}>
-        <Typography variant="h4" gutterBottom>
-          Individual Payment
+        <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
+          {t('payment.fullBillPayment')}
         </Typography>
         <Typography variant="body1" color="text.secondary" mb={3}>
-          Hello {paymentData.personName}, complete your payment here
+          {t('payment.yourInfo')}
         </Typography>
 
         <Divider sx={{ my: 3 }} />
 
         {/* Payment details */}
-        <Paper variant="outlined" sx={{ p: 3, mb: 3, bgcolor: "background.default" }}>
+        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, mb: 3, bgcolor: "background.default" }}>
           <Typography variant="h6" gutterBottom>
-            Payment Summary
+            {t('payment.finalSummary')}
           </Typography>
           
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Product</TableCell>
-                <TableCell align="center">Quantity</TableCell>
-                <TableCell align="right">Unit Price</TableCell>
-                <TableCell align="right">Subtotal</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paymentData.products.map((product) => (
-                <TableRow key={product.itemId}>
-                  <TableCell>{product.itemName}</TableCell>
-                  <TableCell align="center">{product.quantity}</TableCell>
-                  <TableCell align="right">
-                    {product.unitPrice.toFixed(2)} {paymentData.currency}
-                  </TableCell>
-                  <TableCell align="right">
-                    {(product.unitPrice * product.quantity).toFixed(2)} {paymentData.currency}
-                  </TableCell>
+          <Box sx={{ overflowX: 'auto' }}>
+            <Table size="small" sx={{ minWidth: { xs: 300, sm: 500 } }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('products.product')}</TableCell>
+                  <TableCell align="center">{t('products.quantity')}</TableCell>
+                  <TableCell align="right">{t('products.unitPrice')}</TableCell>
+                  <TableCell align="right">{t('products.subtotal')}</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {paymentData.products.map((product) => (
+                  <TableRow key={product.itemId}>
+                    <TableCell sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>{product.itemName}</TableCell>
+                    <TableCell align="center">{product.quantity}</TableCell>
+                    <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
+                      {product.unitPrice.toFixed(2)} {paymentData.currency}
+                    </TableCell>
+                    <TableCell align="right" sx={{ whiteSpace: 'nowrap' }}>
+                      {(product.unitPrice * product.quantity).toFixed(2)} {paymentData.currency}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
 
           <Divider sx={{ my: 2 }} />
 
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">Total:</Typography>
-            <Typography variant="h5" color="primary">
+          <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1}>
+            <Typography variant="h6">{t('bill.totalBill')}:</Typography>
+            <Typography variant="h5" color="primary" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
               {paymentData.amount.toFixed(2)} {paymentData.currency}
             </Typography>
           </Box>

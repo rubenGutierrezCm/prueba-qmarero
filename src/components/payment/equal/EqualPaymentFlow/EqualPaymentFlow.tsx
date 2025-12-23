@@ -72,7 +72,7 @@ export const EqualPaymentFlow = ({ bill }: EqualPaymentFlowProps) => {
             sessionId={equalPayment.sessionId}
             onBack={() => setActiveStep(0)}
             onProceed={() => {
-              window.location.href = "/payment/split/confirmation";
+              window.location.href = "/email/sent?method=equal";
             }}
           />
         )}

@@ -15,7 +15,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { LoadingButton, StatusAlert, StepNavigation } from "@/components/ui";
+import { LoadingButton, StatusAlert } from "@/components/ui";
 import PersonIcon from "@mui/icons-material/Person";
 import { PersonSplit, Bill } from "@/types/bill";
 import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
@@ -94,7 +94,7 @@ export const EqualConfirmationStep = ({
     <Box>
       {/* Warning section */}
       <WarningBox>
-        {t('equal.reviewEqualAmount', { amount: amountPerPerson.toFixed(2), currency })}
+        {t('payment.reviewInfoMultiple')}
       </WarningBox>
 
       {/* Summary */}
@@ -117,7 +117,7 @@ export const EqualConfirmationStep = ({
         </Box>
         <Divider sx={{ my: 2 }} />
         <Box display="flex" justifyContent="space-between">
-          <Typography variant="h6" color="primary">
+          <Typography variant="h6">
             {t('equal.amountPerPerson')}:
           </Typography>
           <Typography variant="h6" color="primary" fontWeight="bold">

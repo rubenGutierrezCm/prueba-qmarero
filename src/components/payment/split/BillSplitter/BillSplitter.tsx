@@ -41,7 +41,10 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   ];
 
   // Check if can proceed to confirmation step
-  const canProceedToConfirmation = splitter.getTotalAssigned() === splitter.totalBill;
+  // Use Math.abs to handle floating point precision issues
+  const totalAssigned = splitter.getTotalAssigned();
+  const difference = Math.abs(totalAssigned - splitter.totalBill);
+  const canProceedToConfirmation = difference < 0.01; // Allow 1 cent tolerance
 
   /**
    * Handle adding a person
@@ -115,7 +118,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
             calculatePersonTotal={splitter.calculatePersonTotal}
             onBack={() => setActiveStep(1)}
             onProceed={() => {
-              window.location.href = "/payment/split/confirmation";
+              window.location.href = "/email/sent?method=split";
             }}
           />
         )}

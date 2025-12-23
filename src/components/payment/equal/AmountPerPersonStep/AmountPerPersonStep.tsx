@@ -80,7 +80,7 @@ export const AmountPerPersonStep = ({
           </Box>
           <Divider sx={{ my: 2 }} />
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="h6" color="primary">
+            <Typography variant="h6">
               {t('equal.amountPerPerson')}:
             </Typography>
             <Typography variant="h6" color="primary" fontWeight="bold">

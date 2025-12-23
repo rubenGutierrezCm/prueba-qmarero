@@ -80,8 +80,7 @@
     "amountPerPerson": "Cantidad por persona",
     "peopleWillPay": "Personas que pagarán",
     "amountToPay": "Monto a pagar",
-    "sendEmailsAndProcess": "Enviar correos y procesar",
-    "reviewEqualAmount": "Revisa cuidadosamente toda la información. Se enviará un correo electrónico a cada persona con su enlace de pago por un monto igual de {{amount}} {{currency}}."
+    "sendEmailsAndProcess": "Enviar correos y procesar"
   },
   "stepper": {
     "configurePeople": "Configurar personas",
@@ -92,6 +91,8 @@
   "success": {
     "emailsSent": "¡Correos enviados!",
     "emailsSentDescription": "Se han enviado los correos electrónicos correctamente. Cada persona recibirá un enlace único para realizar su pago.",
+    "emailSent": "¡Correo enviado!",
+    "emailSentDescription": "El correo electrónico ha sido enviado correctamente. Recibirás un enlace único para realizar tu pago.",
     "title": "¡Pago exitoso!",
     "description": "Tu pago ha sido procesado exitosamente. Recibirás un correo de confirmación en breve."
   }
