@@ -7,11 +7,13 @@
 import { MOCK_BILL } from "@/lib/mockBill";
 import { EqualPaymentFlow } from "@/components/payment/equal";
 import { PaymentMethodHeader } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
 export default function EqualPaymentPage() {
+  const { t } = useTranslation();
   
   return (
-    <PaymentMethodHeader title="Partes iguales">
+    <PaymentMethodHeader title={t('payment.equalSplit')}>
       <EqualPaymentFlow bill={MOCK_BILL} />
     </PaymentMethodHeader>
   );

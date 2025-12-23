@@ -7,15 +7,21 @@
 import { Button, CircularProgress, ButtonProps } from "@mui/material";
 import { ReactNode } from "react";
 
+/**
+ * Props for the LoadingButton component
+ */
 interface LoadingButtonProps extends Omit<ButtonProps, 'children'> {
+  /** Whether the button is in loading state */
   loading: boolean;
+  /** Text to display when loading */
   loadingText?: string;
+  /** Button content when not loading */
   children: ReactNode;
 }
 
 export const LoadingButton = ({
   loading,
-  loadingText = "Cargando...",
+  loadingText = "Loading...",
   children,
   variant = "contained",
   disabled,

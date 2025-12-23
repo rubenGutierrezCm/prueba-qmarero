@@ -6,8 +6,11 @@
 
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { CenteredMessagePage } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
 export default function PaymentSuccessPage() {
+  const { t } = useTranslation();
+  
   return (
     <CenteredMessagePage
       icon={
@@ -18,8 +21,8 @@ export default function PaymentSuccessPage() {
           }}
         />
       }
-      title="¡Pago realizado con éxito!"
-      description="Tu pago ha sido procesado correctamente. Recibirás un correo de confirmación en breve."
+      title={t('success.title')}
+      description={t('success.description')}
     />
   );
 }

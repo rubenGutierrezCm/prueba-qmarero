@@ -16,18 +16,30 @@ import {
 import PersonIcon from "@mui/icons-material/Person";
 import { PersonSplit } from "@/types/bill";
 import { Bill } from "@/types/bill";
-import { StatusAlert } from "@/components/ui";
+import { StatusAlert, StepNavigation } from "@/components/ui";
 import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
 import { WarningBox } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the ConfirmationStep component
+ */
 interface ConfirmationStepProps {
+  /** List of people with their assigned items */
   people: PersonSplit[];
+  /** Total bill amount */
   totalBill: number;
+  /** Currency code */
   currency: string;
+  /** Complete bill data */
   bill: Bill;
+  /** Unique session identifier */
   sessionId: string;
+  /** Function to calculate total for a person */
   calculatePersonTotal: (person: PersonSplit) => number;
+  /** Callback to go back */
   onBack: () => void;
+  /** Callback to proceed after success */
   onProceed: () => void;
 }
 
@@ -41,6 +53,7 @@ export const ConfirmationStep = ({
   onBack,
   onProceed,
 }: ConfirmationStepProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -61,7 +74,7 @@ export const ConfirmationStep = ({
             const billItem = bill.items.find(bi => bi.id === item.itemId);
             return {
               itemId: item.itemId,
-              itemName: billItem?.name || "Producto desconocido",
+              itemName: billItem?.name || "Unknown product",
               quantity: item.quantity,
               unitPrice: billItem?.unitPrice || 0,
             };
@@ -76,7 +89,7 @@ export const ConfirmationStep = ({
 
     } catch (err) {
       console.error("Error:", err);
-      setError("Error al procesar la solicitud. Por favor, intenta de nuevo.");
+      setError(t('payment.errorProcessing'));
       setLoading(false);
     }
   };
@@ -84,14 +97,14 @@ export const ConfirmationStep = ({
   return (
     <Box>
         <WarningBox>
-          Revisa cuidadosamente toda la información, se enviará un correo electrónico a cada persona con su enlace de pago.
+          {t('payment.reviewInfoMultiple')}
         </WarningBox>
         <Paper
           variant="outlined"
           sx={{ p: { xs: 2, sm: 3 }, mb: 3, bgcolor: "background.default" }}
         >
           <Typography variant="h6" gutterBottom>
-            Resumen de la división
+            {t('payment.splitSummary')}
           </Typography>
           <Divider sx={{ my: 2 }} />
 
@@ -129,7 +142,7 @@ export const ConfirmationStep = ({
           <Divider sx={{ my: 2 }} />
 
           <Box display="flex" justifyContent="space-between" px={{ xs: 1, sm: 2 }} flexWrap="wrap" gap={1}>
-            <Typography variant="h6">Total:</Typography>
+            <Typography variant="h6">{t('common.total')}:</Typography>
             <Typography variant="h6" color="primary">
               {totalBill.toFixed(2)} {currency}
             </Typography>
@@ -139,7 +152,7 @@ export const ConfirmationStep = ({
         <StatusAlert
           error={error}
           success={success}
-          successMessage="¡Correos enviados exitosamente! Cada persona recibirá su enlace de pago."
+          successMessage={t('payment.emailsSentSuccess')}
         />
 
         <Box
@@ -152,7 +165,7 @@ export const ConfirmationStep = ({
             onClick={onBack}
             disabled={loading || success}
           >
-            Volver
+            {t('common.back')}
           </Button>
           <Button
             variant="contained"
@@ -163,9 +176,9 @@ export const ConfirmationStep = ({
             {loading ? (
               <CircularProgress size={24} color="inherit" />
             ) : success ? (
-              "✓ Enviados"
+              `✓ ${t('common.sent')}`
             ) : (
-              "Confirmar"
+              t('common.confirm')
             )}
           </Button>
         </Box>

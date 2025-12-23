@@ -51,27 +51,27 @@ export const generatePaymentEmail = (params: EmailTemplateParams): string => {
     <html>
       <head>
         <meta charset="utf-8">
-        <title>Solicitud de pago - Qmarero</title>
+        <title>Payment Request - Qmarero</title>
       </head>
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 28px;">Qmarero</h1>
-          <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">División de Cuenta</p>
+          <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Bill Splitting</p>
         </div>
         
         <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-          <h2 style="color: #667eea; margin-top: 0;">Hola ${personName},</h2>
+          <h2 style="color: #667eea; margin-top: 0;">Hello ${personName},</h2>
           
-          <p style="font-size: 16px;">Se ha dividido una cuenta del restaurante <strong>${tableName}</strong> (Mesa ${tableId}) y tienes un pago pendiente.</p>
+          <p style="font-size: 16px;">A bill from <strong>${tableName}</strong> restaurant (Table ${tableId}) has been split and you have a pending payment.</p>
           
           <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
-            <h3 style="margin-top: 0; color: #667eea;">Tus productos:</h3>
+            <h3 style="margin-top: 0; color: #667eea;">Your products:</h3>
             <table style="width: 100%; border-collapse: collapse;">
               <thead>
                 <tr style="background: #f5f5f5;">
-                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">Producto</th>
-                  <th style="padding: 10px; text-align: center; border-bottom: 2px solid #667eea;">Cant.</th>
-                  <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Precio</th>
+                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">Product</th>
+                  <th style="padding: 10px; text-align: center; border-bottom: 2px solid #667eea;">Qty.</th>
+                  <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Price</th>
                   <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Subtotal</th>
                 </tr>
               </thead>
@@ -81,7 +81,7 @@ export const generatePaymentEmail = (params: EmailTemplateParams): string => {
             </table>
             <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #667eea; text-align: right;">
               <p style="margin: 0; font-size: 20px;">
-                <strong>Total a pagar:</strong> 
+                <strong>Total to pay:</strong> 
                 <span style="color: #667eea; font-size: 24px;">${total.toFixed(2)} ${currency}</span>
               </p>
             </div>
@@ -89,17 +89,17 @@ export const generatePaymentEmail = (params: EmailTemplateParams): string => {
           
           <div style="text-align: center; margin: 30px 0;">
             <a href="${paymentLink}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 50px; font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-              💳 Pagar Ahora
+              💳 Pay Now
             </a>
           </div>
           
           <p style="font-size: 14px; color: #666; margin-top: 30px;">
-            <strong>Nota:</strong> Este enlace es único y personal. Haz clic en el botón para completar tu pago de forma segura.
+            <strong>Note:</strong> This link is unique and personal. Click the button to complete your payment securely.
           </p>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #999; font-size: 12px;">
-            <p>Atendido por: ${server}</p>
-            <p>© 2025 Qmarero - Sistema de división de cuentas</p>
+            <p>Served by: ${server}</p>
+            <p>© 2025 Qmarero - Bill splitting system</p>
           </div>
         </div>
       </body>
@@ -109,6 +109,11 @@ export const generatePaymentEmail = (params: EmailTemplateParams): string => {
 
 /**
  * Helper to create email params from person and bill data
+ * @param person - Person splitting the bill
+ * @param bill - The bill data
+ * @param personTotal - Total amount for this person
+ * @param paymentLink - Payment link URL
+ * @returns Email template parameters
  */
 export const createEmailParams = (
   person: PersonSplit,
@@ -119,7 +124,7 @@ export const createEmailParams = (
   const products = person.items.map((item) => {
     const billItem = bill.items.find((bi) => bi.id === item.itemId);
     return {
-      name: billItem?.name || "Producto desconocido",
+      name: billItem?.name || "Unknown product",
       quantity: item.quantity,
       unitPrice: billItem?.unitPrice || 0,
       subtotal: (billItem?.unitPrice || 0) * item.quantity,

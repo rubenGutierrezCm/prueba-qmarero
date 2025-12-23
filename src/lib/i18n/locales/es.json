@@ -1,0 +1,98 @@
+{
+  "home": {
+    "title": "¿Cómo quieres pagar?",
+    "subtitle": "Selecciona una opción para continuar con el pago",
+    "paySingle": "Pago todo yo",
+    "payEqual": "Dividir entre todos",
+    "paySplit": "Cada uno paga lo suyo"
+  },
+  "common": {
+    "back": "Volver",
+    "continue": "Continuar",
+    "confirm": "Confirmar",
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "assign": "Asignar",
+    "loading": "Cargando...",
+    "sending": "Enviando...",
+    "sent": "Enviado",
+    "total": "Total",
+    "currency": "EUR"
+  },
+  "people": {
+    "addPerson": "Añadir persona",
+    "noPeopleAdded": "No hay personas añadidas",
+    "addPeopleDescription": "Añade las personas que van a compartir la cuenta",
+    "totalPeople": "Total: {{count}} persona",
+    "totalPeople_plural": "Total: {{count}} personas",
+    "fullName": "Nombre completo",
+    "email": "Correo electrónico",
+    "mustAddFirst": "Debes añadir personas primero"
+  },
+  "products": {
+    "clickToAssign": "*Haz clic en cada producto para asignarlo a las personas",
+    "summaryByPerson": "Resumen por persona",
+    "assignProduct": "Asignar producto",
+    "assignQuantities": "Asigna las cantidades a cada persona:",
+    "quantity": "Cantidad",
+    "available": "Disponibles",
+    "totalToAssign": "Total a asignar",
+    "units": "unidades",
+    "exceedsAvailable": "La cantidad asignada excede las unidades disponibles",
+    "mustAssignAll": "Debes asignar todos los productos antes de continuar",
+    "product": "Producto",
+    "unitPrice": "Precio Unit.",
+    "subtotal": "Subtotal"
+  },
+  "bill": {
+    "totalBill": "Total cuenta",
+    "totalAssigned": "Total asignado",
+    "remaining": "Restante",
+    "details": "Detalles de la cuenta",
+    "table": "Mesa",
+    "servedBy": "Atendido por",
+    "product": "Producto",
+    "quantity": "Cantidad",
+    "unitPrice": "Precio Unit.",
+    "subtotal": "Subtotal"
+  },
+  "payment": {
+    "fullBillPayment": "Pago Completo de la Cuenta",
+    "equalSplit": "División Igual",
+    "splitBill": "Dividir Cuenta",
+    "reviewInfo": "Revisa cuidadosamente toda la información. Se enviará un correo electrónico con el enlace de la pasarela de pago.",
+    "reviewInfoMultiple": "Revisa cuidadosamente toda la información, se enviará un correo electrónico a cada persona con su enlace de pago.",
+    "yourInfo": "Tu Información",
+    "sendEmailMessage": "Te enviaremos un correo con el enlace para realizar el pago",
+    "name": "Nombre",
+    "emailsSentSuccess": "¡Correos enviados exitosamente! Cada persona recibirá su enlace de pago.",
+    "emailSentSuccess": "¡Correo enviado exitosamente! Redirigiendo...",
+    "errorProcessing": "Error al procesar la solicitud. Por favor, intenta de nuevo.",
+    "splitSummary": "Resumen de la división",
+    "finalSummary": "Resumen Final",
+    "peopleWillReceive": "Personas que recibirán enlace de pago"
+  },
+  "equal": {
+    "title": "División a partes iguales",
+    "description": "La cuenta se dividirá equitativamente entre todas las personas. Cada persona pagará exactamente la misma cantidad.",
+    "splitSummaryTitle": "Resumen de la división",
+    "numberOfPeople": "Número de personas",
+    "amountPerPerson": "Cantidad por persona",
+    "peopleWillPay": "Personas que pagarán",
+    "amountToPay": "Monto a pagar",
+    "sendEmailsAndProcess": "Enviar correos y procesar",
+    "reviewEqualAmount": "Revisa cuidadosamente toda la información. Se enviará un correo electrónico a cada persona con su enlace de pago por un monto igual de {{amount}} {{currency}}."
+  },
+  "stepper": {
+    "configurePeople": "Configurar personas",
+    "assignProducts": "Asignar productos",
+    "confirmSplit": "Confirmar división",
+    "sendPayments": "Enviar pagos"
+  },
+  "success": {
+    "emailsSent": "¡Correos enviados!",
+    "emailsSentDescription": "Se han enviado los correos electrónicos correctamente. Cada persona recibirá un enlace único para realizar su pago.",
+    "title": "¡Pago exitoso!",
+    "description": "Tu pago ha sido procesado exitosamente. Recibirás un correo de confirmación en breve."
+  }
+}

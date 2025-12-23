@@ -1,0 +1,98 @@
+{
+  "home": {
+    "title": "Comment voulez-vous payer ?",
+    "subtitle": "Sélectionnez une option pour continuer avec le paiement",
+    "paySingle": "Je paie tout",
+    "payEqual": "Diviser également",
+    "paySplit": "Chacun paie le sien"
+  },
+  "common": {
+    "back": "Retour",
+    "continue": "Continuer",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "assign": "Assigner",
+    "loading": "Chargement...",
+    "sending": "Envoi...",
+    "sent": "Envoyé",
+    "total": "Total",
+    "currency": "EUR"
+  },
+  "people": {
+    "addPerson": "Ajouter une personne",
+    "noPeopleAdded": "Aucune personne ajoutée",
+    "addPeopleDescription": "Ajoutez les personnes qui partageront l'addition",
+    "totalPeople": "Total : {{count}} personne",
+    "totalPeople_plural": "Total : {{count}} personnes",
+    "fullName": "Nom complet",
+    "email": "Adresse e-mail",
+    "mustAddFirst": "Vous devez d'abord ajouter des personnes"
+  },
+  "products": {
+    "clickToAssign": "*Cliquez sur chaque produit pour l'assigner aux personnes",
+    "summaryByPerson": "Résumé par personne",
+    "assignProduct": "Assigner le produit",
+    "assignQuantities": "Assignez les quantités à chaque personne :",
+    "quantity": "Quantité",
+    "available": "Disponibles",
+    "totalToAssign": "Total à assigner",
+    "units": "unités",
+    "exceedsAvailable": "La quantité assignée dépasse les unités disponibles",
+    "mustAssignAll": "Vous devez assigner tous les produits avant de continuer",
+    "product": "Produit",
+    "unitPrice": "Prix unitaire",
+    "subtotal": "Sous-total"
+  },
+  "bill": {
+    "totalBill": "Total de l'addition",
+    "totalAssigned": "Total assigné",
+    "remaining": "Restant",
+    "details": "Détails de l'addition",
+    "table": "Table",
+    "servedBy": "Servi par",
+    "product": "Produit",
+    "quantity": "Qté",
+    "unitPrice": "Prix unitaire",
+    "subtotal": "Sous-total"
+  },
+  "payment": {
+    "fullBillPayment": "Paiement Complet de l'Addition",
+    "equalSplit": "Division Égale",
+    "splitBill": "Diviser l'Addition",
+    "reviewInfo": "Vérifiez attentivement toutes les informations. Un e-mail sera envoyé avec le lien de la passerelle de paiement.",
+    "reviewInfoMultiple": "Vérifiez attentivement toutes les informations. Un e-mail sera envoyé à chaque personne avec son lien de paiement.",
+    "yourInfo": "Vos Informations",
+    "sendEmailMessage": "Nous vous enverrons un e-mail avec le lien de paiement",
+    "name": "Nom",
+    "emailsSentSuccess": "E-mails envoyés avec succès ! Chaque personne recevra son lien de paiement.",
+    "emailSentSuccess": "E-mail envoyé avec succès ! Redirection...",
+    "errorProcessing": "Erreur lors du traitement de la demande. Veuillez réessayer.",
+    "splitSummary": "Résumé de la division",
+    "finalSummary": "Résumé Final",
+    "peopleWillReceive": "Personnes qui recevront le lien de paiement"
+  },
+  "equal": {
+    "title": "Division en parts égales",
+    "description": "L'addition sera divisée équitablement entre toutes les personnes. Chaque personne paiera exactement le même montant.",
+    "splitSummaryTitle": "Résumé de la division",
+    "numberOfPeople": "Nombre de personnes",
+    "amountPerPerson": "Montant par personne",
+    "peopleWillPay": "Personnes qui paieront",
+    "amountToPay": "Montant à payer",
+    "sendEmailsAndProcess": "Envoyer les e-mails et traiter",
+    "reviewEqualAmount": "Vérifiez attentivement toutes les informations. Un e-mail sera envoyé à chaque personne avec son lien de paiement pour un montant égal de {{amount}} {{currency}}."
+  },
+  "stepper": {
+    "configurePeople": "Configurer les personnes",
+    "assignProducts": "Assigner les produits",
+    "confirmSplit": "Confirmer la division",
+    "sendPayments": "Envoyer les paiements"
+  },
+  "success": {
+    "emailsSent": "E-mails envoyés !",
+    "emailsSentDescription": "Les e-mails ont été envoyés avec succès. Chaque personne recevra un lien unique pour effectuer son paiement.",
+    "title": "Paiement réussi !",
+    "description": "Votre paiement a été traité avec succès. Vous recevrez un e-mail de confirmation sous peu."
+  }
+}

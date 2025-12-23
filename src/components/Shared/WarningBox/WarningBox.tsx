@@ -8,7 +8,11 @@ import { Paper, Typography, PaperProps } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import { ReactNode } from "react";
 
+/**
+ * Props for the WarningBox component
+ */
 interface WarningBoxProps extends Omit<PaperProps, 'variant'> {
+  /** Warning message content */
   children: ReactNode;
 }
 

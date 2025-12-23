@@ -6,14 +6,16 @@
 
 import { Box, Button, Typography, Stack } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitch } from "@/components/Shared";
 
 export default function PaymentOptions() {
-
   const router = useRouter();
+  const { t } = useTranslation();
 
-   const handleChangeRoute = (url: string) => {
-    router.push(url)
-  }
+  const handleChangeRoute = (url: string) => {
+    router.push(url);
+  };
 
   return (
     <Box
@@ -24,8 +26,20 @@ export default function PaymentOptions() {
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "background.default",
+        position: "relative",
       }}
     >
+      {/* Language Switch - Top Right */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+        }}
+      >
+        <LanguageSwitch />
+      </Box>
+
       <Box sx={{ width: "100%", maxWidth: 420 }}>
         <Typography
           variant="h5"
@@ -33,7 +47,7 @@ export default function PaymentOptions() {
           gutterBottom
           sx={{ fontWeight: 600 }}
         >
-          ¿Cómo quieres pagar?
+          {t('home.title')}
         </Typography>
 
         <Typography
@@ -42,7 +56,7 @@ export default function PaymentOptions() {
           color="text.secondary"
           sx={{ mb: 3 }}
         >
-          Selecciona una opción para continuar con el pago
+          {t('home.subtitle')}
         </Typography>
 
         <Stack spacing={2}>
@@ -52,7 +66,7 @@ export default function PaymentOptions() {
             fullWidth
             onClick={() => handleChangeRoute("payment/single")}
           >
-            Pagar todo yo
+            {t('home.paySingle')}
           </Button>
           <Button
             variant="outlined"
@@ -60,7 +74,7 @@ export default function PaymentOptions() {
             fullWidth
             onClick={() => handleChangeRoute("payment/equal")}
           >
-            Dividir entre todos
+            {t('home.payEqual')}
           </Button>
           <Button
             variant="outlined"
@@ -68,7 +82,7 @@ export default function PaymentOptions() {
             fullWidth
             onClick={() => handleChangeRoute("payment/split")}
           >
-            Cada uno paga lo suyo
+            {t('home.paySplit')}
           </Button>
         </Stack>
       </Box>

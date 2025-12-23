@@ -72,7 +72,7 @@ const PaymentFormContent = ({
     try {
       const { error: submitError } = await elements.submit();
       if (submitError) {
-        setError(submitError.message || "Error en el formulario");
+        setError(submitError.message || "Form error");
         setLoading(false);
         return;
       }
@@ -83,17 +83,17 @@ const PaymentFormContent = ({
       });
 
       if (result.error) {
-        setError(result.error.message || "Error en el pago");
+        setError(result.error.message || "Payment error");
         setLoading(false);
       } else if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
-        // Marcar como pagado en IndexedDB
+        // Mark as paid in IndexedDB
         await markPaymentAsPaid(paymentData.paymentId, result.paymentIntent.id);
         onSuccess();
       } else {
         setLoading(false);
       }
     } catch {
-      setError("Error inesperado al procesar el pago");
+      setError("Unexpected error processing payment");
       setLoading(false);
     }
   };
@@ -108,10 +108,10 @@ const PaymentFormContent = ({
         onClick={handleSubmit}
         disabled={!stripe}
         loading={loading}
-        loadingText="Procesando..."
+        loadingText="Processing..."
         sx={{ mt: 3 }}
       >
-        Pagar {paymentData.amount.toFixed(2)} {paymentData.currency}
+        Pay {paymentData.amount.toFixed(2)} {paymentData.currency}
       </LoadingButton>
     </Box>
   );
@@ -134,7 +134,7 @@ export default function PaymentLinkPage() {
         const payment = await getPayment(paymentId);
         
         if (!payment) {
-          setError("Pago no encontrado");
+          setError("Payment not found");
           setLoading(false);
           return;
         }
@@ -148,7 +148,7 @@ export default function PaymentLinkPage() {
 
         setPaymentData(payment);
 
-        // Crear payment intent
+        // Create payment intent
         const response = await fetch("/api/stripe/payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -159,14 +159,14 @@ export default function PaymentLinkPage() {
         });
 
         if (!response.ok) {
-          throw new Error("Error al crear payment intent");
+          throw new Error("Error creating payment intent");
         }
 
         const data = await response.json();
         setClientSecret(data.clientSecret);
       } catch (err) {
         console.error("Error:", err);
-        setError("Error al cargar los datos del pago");
+        setError("Error loading payment data");
       } finally {
         setLoading(false);
       }
@@ -188,7 +188,7 @@ export default function PaymentLinkPage() {
         <Box textAlign="center">
           <CircularProgress />
           <Typography variant="h6" sx={{ mt: 2 }}>
-            Cargando datos del pago...
+            Loading payment data...
           </Typography>
         </Box>
       </Container>
@@ -209,18 +209,18 @@ export default function PaymentLinkPage() {
         <Paper elevation={2} sx={{ p: 4, textAlign: "center" }}>
           <CheckCircleIcon sx={{ fontSize: 80, color: "success.main", mb: 2 }} />
           <Typography variant="h4" gutterBottom>
-            ¡Pago completado!
+            Payment completed!
           </Typography>
           <Typography variant="body1" color="text.secondary" mb={3}>
-            Gracias {paymentData.personName}, tu pago de{" "}
+            Thank you {paymentData.personName}, your payment of{" "}
             <strong>
               {paymentData.amount.toFixed(2)} {paymentData.currency}
             </strong>{" "}
-            ha sido procesado correctamente.
+            has been processed successfully.
           </Typography>
           {paymentData.paidAt && (
             <Typography variant="body2" color="text.secondary">
-              Pagado el {new Date(paymentData.paidAt).toLocaleString()}
+              Paid on {new Date(paymentData.paidAt).toLocaleString()}
             </Typography>
           )}
         </Paper>
@@ -236,26 +236,26 @@ export default function PaymentLinkPage() {
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 } }}>
         <Typography variant="h4" gutterBottom>
-          Pago Individual
+          Individual Payment
         </Typography>
         <Typography variant="body1" color="text.secondary" mb={3}>
-          Hola {paymentData.personName}, completa tu pago aquí
+          Hello {paymentData.personName}, complete your payment here
         </Typography>
 
         <Divider sx={{ my: 3 }} />
 
-        {/* Detalles del pago */}
+        {/* Payment details */}
         <Paper variant="outlined" sx={{ p: 3, mb: 3, bgcolor: "background.default" }}>
           <Typography variant="h6" gutterBottom>
-            Resumen de tu pago
+            Payment Summary
           </Typography>
           
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>Producto</TableCell>
-                <TableCell align="center">Cantidad</TableCell>
-                <TableCell align="right">Precio Unit.</TableCell>
+                <TableCell>Product</TableCell>
+                <TableCell align="center">Quantity</TableCell>
+                <TableCell align="right">Unit Price</TableCell>
                 <TableCell align="right">Subtotal</TableCell>
               </TableRow>
             </TableHead>

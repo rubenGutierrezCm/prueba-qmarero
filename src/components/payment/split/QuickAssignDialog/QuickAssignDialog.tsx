@@ -22,15 +22,27 @@ import {
 import PersonIcon from "@mui/icons-material/Person";
 import { Bill, PersonSplit } from "@/types/bill";
 import { TextField } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the QuickAssignDialog component
+ */
 interface QuickAssignDialogProps {
+  /** Whether the dialog is open */
   open: boolean;
+  /** Complete bill data */
   bill: Bill;
+  /** List of people */
   people: PersonSplit[];
+  /** ID of the item being assigned */
   quickAssignItemId: string;
+  /** Current quantities assigned to each person */
   quickAssignQuantities: Record<string, number | string>;
+  /** Function to get total assigned quantity for an item */
   getItemAssignedQty: (itemId: string) => number;
+  /** Callback when dialog is closed */
   onClose: () => void;
+  /** Callback when quantities are assigned */
   onAssign: (quantities: Record<string, number | string>) => void;
 }
 
@@ -44,6 +56,7 @@ export const QuickAssignDialog = ({
   onClose,
   onAssign,
 }: QuickAssignDialogProps) => {
+  const { t } = useTranslation();
   const selectedItem = bill.items.find((i) => i.id === quickAssignItemId);
   const totalAssignedToOthers = getItemAssignedQty(quickAssignItemId);
   
@@ -68,10 +81,10 @@ export const QuickAssignDialog = ({
           return typeof val === 'number' ? val : parseInt(String(val)) || 0;
         })
         .refine((val) => val >= 0, {
-          message: "No puede ser negativo",
+          message: "Cannot be negative",
         })
         .refine((val) => val <= availableQty, {
-          message: "Excede disponibles",
+          message: "Exceeds available",
         });
     });
     
@@ -121,7 +134,7 @@ export const QuickAssignDialog = ({
       <DialogTitle>
         {quickAssignItemId && (
           <Box>
-            <Typography variant="h6">Asignar producto</Typography>
+            <Typography variant="h6">{t('products.assignProduct')}</Typography>
             <Typography variant="body2" color="text.secondary">
               {bill.items.find((i) => i.id === quickAssignItemId)?.name}
             </Typography>
@@ -130,7 +143,7 @@ export const QuickAssignDialog = ({
       </DialogTitle>
       <DialogContent sx={{ pb: 2 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Asigna las cantidades a cada persona:
+          {t('products.assignQuantities')}
         </Typography>
         {people.map((person) => (
           <Box
@@ -164,7 +177,7 @@ export const QuickAssignDialog = ({
               errors={{}}
               type="number"
               size="medium"
-              label="Cantidad"
+              label={t('products.quantity')}
               inputProps={{ min: 0, max: availableQty }}
               sx={{ width: { xs: 100, sm: 120 } }}
             />
@@ -173,24 +186,24 @@ export const QuickAssignDialog = ({
         <Divider sx={{ my: 2 }} />
         <Box>
           <Box display="flex" justifyContent="space-between" mb={1}>
-            <Typography variant="body2">Disponibles:</Typography>
+            <Typography variant="body2">{t('products.available')}:</Typography>
             <Typography variant="body2" fontWeight="bold">
-              {availableQty} unidades
+              {availableQty} {t('products.units')}
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between">
-            <Typography variant="body2">Total a asignar:</Typography>
+            <Typography variant="body2">{t('products.totalToAssign')}:</Typography>
             <Typography 
               variant="body2" 
               fontWeight="bold"
               color={exceedsAvailable ? "error" : "inherit"}
             >
-              {totalToAssign} unidades
+              {totalToAssign} {t('products.units')}
             </Typography>
           </Box>
           {exceedsAvailable && (
             <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
-              ⚠️ La cantidad asignada excede las unidades disponibles
+              ⚠️ {t('products.exceedsAvailable')}
             </Typography>
           )}
         </Box>
@@ -201,7 +214,7 @@ export const QuickAssignDialog = ({
         justifyContent: "space-between"
       }}>
         <Button onClick={onClose} sx={{ width: { xs: '100%', sm: 'auto' } }}>
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button
           onClick={handleSubmit(handleFormSubmit)}
@@ -209,7 +222,7 @@ export const QuickAssignDialog = ({
           disabled={totalToAssign === 0 || exceedsAvailable}
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
-          Asignar
+          {t('common.assign')}
         </Button>
       </DialogActions>
     </Dialog>

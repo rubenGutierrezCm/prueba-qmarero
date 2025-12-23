@@ -7,11 +7,13 @@
 import { MOCK_BILL } from "@/lib/mockBill";
 import { BillSplitter } from "@/components/payment/split";
 import { PaymentMethodHeader } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
 export default function SplitBillPage() {
+  const { t } = useTranslation();
 
   return (
-    <PaymentMethodHeader title="Dividir Cuenta">
+    <PaymentMethodHeader title={t('payment.splitBill')}>
       <BillSplitter bill={MOCK_BILL} />
     </PaymentMethodHeader>
   )

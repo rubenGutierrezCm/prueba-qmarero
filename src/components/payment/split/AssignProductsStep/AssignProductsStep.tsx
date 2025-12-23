@@ -10,18 +10,33 @@ import { ProductListItem } from "@/components/ui";
 import { PersonSummaryCard } from "./PersonSummaryCard";
 import { AssignmentSummary } from "./AssignmentSummary";
 import { StepNavigation } from "@/components/ui";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the AssignProductsStep component
+ */
 interface AssignProductsStepProps {
+  /** Bill data with items */
   bill: Bill;
+  /** List of people sharing the bill */
   people: PersonSplit[];
+  /** Total bill amount */
   totalBill: number;
+  /** Function to get total assigned amount */
   getTotalAssigned: () => number;
+  /** Function to get quantity assigned for a specific item */
   getItemAssignedQty: (itemId: string) => number;
+  /** Function to calculate total for a person */
   calculatePersonTotal: (person: PersonSplit) => number;
+  /** Callback to open quick assign dialog */
   onOpenQuickAssign: (itemId: string) => void;
+  /** Callback to remove item from person */
   onRemoveItemFromPerson: (personId: string, itemId: string) => void;
+  /** Callback to go back */
   onBack: () => void;
+  /** Callback to continue */
   onContinue: () => void;
+  /** Whether all products are assigned */
   canProceed: boolean;
 }
 
@@ -38,12 +53,13 @@ export const AssignProductsStep = ({
   onContinue,
   canProceed,
 }: AssignProductsStepProps) => {
+  const { t } = useTranslation();
   const totalAssigned = getTotalAssigned();
 
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" gutterBottom>
-        *Haz clic en cada producto para asignarlo a las personas
+        {t('products.clickToAssign')}
       </Typography>
 
       <Box
@@ -78,7 +94,7 @@ export const AssignProductsStep = ({
         {/* Right column: People summary */}
         <Box>
           <Typography variant="h6" textAlign="center" gutterBottom>
-            Resumen por persona
+            {t('products.summaryByPerson')}
           </Typography>
 
           {/* Summary of total assigned */}

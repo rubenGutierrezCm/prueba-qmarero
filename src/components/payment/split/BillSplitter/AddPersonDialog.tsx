@@ -16,10 +16,17 @@ import {
 } from "@mui/material";
 import { personSchema, PersonFormData } from "@/lib/validationSchemas";
 import { TextField } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the AddPersonDialog component
+ */
 interface AddPersonDialogProps {
+  /** Whether the dialog is open */
   open: boolean;
+  /** Callback when dialog is closed */
   onClose: () => void;
+  /** Callback when form is submitted with name and email */
   onSubmit: (name: string, email: string) => void;
 }
 
@@ -28,13 +35,14 @@ export const AddPersonDialog = ({
   onClose,
   onSubmit,
 }: AddPersonDialogProps) => {
+  const { t } = useTranslation();
   const { control, handleSubmit, formState: { errors }, reset } = useForm<PersonFormData>({
     resolver: zodResolver(personSchema),
     defaultValues: {
       name: "",
       email: "",
     },
-    mode: "onBlur",
+    mode: "onSubmit",
   });
 
   useEffect(() => {
@@ -56,7 +64,7 @@ export const AddPersonDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Añadir persona</DialogTitle>
+      <DialogTitle>{t('people.addPerson')}</DialogTitle>
       <DialogContent>
         <TextField
           name="name"
@@ -64,7 +72,7 @@ export const AddPersonDialog = ({
           errors={errors}
           autoFocus
           margin="dense"
-          label="Nombre completo"
+          label={t('people.fullName')}
           fullWidth
           sx={{ mb: 2 }}
         />
@@ -73,7 +81,7 @@ export const AddPersonDialog = ({
           control={control}
           errors={errors}
           margin="dense"
-          label="Correo electrónico"
+          label={t('people.email')}
           type="email"
           fullWidth
           onKeyPress={handleKeyPress}
@@ -84,14 +92,14 @@ export const AddPersonDialog = ({
           onClick={onClose}
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
-          Cancelar
+          {t('common.cancel')}
         </Button>
         <Button
           onClick={handleSubmit(onSubmitForm)}
           variant="contained"
           sx={{ width: { xs: '100%', sm: 'auto' } }}
         >
-          Añadir
+          {t('common.add')}
         </Button>
       </DialogActions>
     </Dialog>

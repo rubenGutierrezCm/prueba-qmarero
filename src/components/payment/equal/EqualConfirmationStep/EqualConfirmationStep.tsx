@@ -15,20 +15,32 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { LoadingButton, StatusAlert } from "@/components/ui";
+import { LoadingButton, StatusAlert, StepNavigation } from "@/components/ui";
 import PersonIcon from "@mui/icons-material/Person";
 import { PersonSplit, Bill } from "@/types/bill";
 import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
 import { WarningBox } from "@/components/Shared";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the EqualConfirmationStep component
+ */
 interface EqualConfirmationStepProps {
+  /** List of people sharing the bill */
   people: PersonSplit[];
+  /** Amount each person will pay */
   amountPerPerson: number;
+  /** Total bill amount */
   totalBill: number;
+  /** Currency code */
   currency: string;
+  /** Complete bill data */
   bill: Bill;
+  /** Unique session identifier */
   sessionId: string;
+  /** Callback to go back */
   onBack: () => void;
+  /** Callback to proceed after success */
   onProceed: () => void;
 }
 
@@ -42,6 +54,7 @@ export const EqualConfirmationStep = ({
   onBack,
   onProceed,
 }: EqualConfirmationStepProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -72,7 +85,7 @@ export const EqualConfirmationStep = ({
 
     } catch (err) {
       console.error("Error:", err);
-      setError("Error al procesar la solicitud. Por favor, intenta de nuevo.");
+      setError(t('payment.errorProcessing'));
       setLoading(false);
     }
   };
@@ -81,23 +94,23 @@ export const EqualConfirmationStep = ({
     <Box>
       {/* Warning section */}
       <WarningBox>
-        Revisa cuidadosamente toda la información. Se enviará un correo electrónico a cada persona con su enlace de pago por un monto igual de <strong>{amountPerPerson.toFixed(2)} {currency}</strong>.
+        {t('equal.reviewEqualAmount', { amount: amountPerPerson.toFixed(2), currency })}
       </WarningBox>
 
       {/* Summary */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Resumen Final
+          {t('payment.finalSummary')}
         </Typography>
         
         <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body1">Total de la cuenta:</Typography>
+          <Typography variant="body1">{t('bill.totalBill')}:</Typography>
           <Typography variant="body1" fontWeight="bold">
             {totalBill.toFixed(2)} {currency}
           </Typography>
         </Box>
         <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body1">Personas:</Typography>
+          <Typography variant="body1">{t('people.totalPeople', { count: people.length }).replace('Total: ', '')}:</Typography>
           <Typography variant="body1" fontWeight="bold">
             {people.length}
           </Typography>
@@ -105,7 +118,7 @@ export const EqualConfirmationStep = ({
         <Divider sx={{ my: 2 }} />
         <Box display="flex" justifyContent="space-between">
           <Typography variant="h6" color="primary">
-            Por persona:
+            {t('equal.amountPerPerson')}:
           </Typography>
           <Typography variant="h6" color="primary" fontWeight="bold">
             {amountPerPerson.toFixed(2)} {currency}
@@ -116,7 +129,7 @@ export const EqualConfirmationStep = ({
       {/* People list */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Personas que recibirán el enlace de pago
+          {t('payment.peopleWillReceive')}
         </Typography>
         
         <List>
@@ -136,7 +149,7 @@ export const EqualConfirmationStep = ({
       <StatusAlert
         error={error}
         success={success}
-        successMessage="¡Correos enviados exitosamente! Redirigiendo..."
+        successMessage={t('payment.emailSentSuccess')}
       />
 
       {/* Actions */}
@@ -147,16 +160,16 @@ export const EqualConfirmationStep = ({
           disabled={loading || success}
           sx={{ flex: 1 }}
         >
-          Volver
+          {t('common.back')}
         </Button>
         <LoadingButton
           onClick={handleConfirmAndSendEmails}
           disabled={success}
           loading={loading}
-          loadingText="Enviando..."
+          loadingText={t('common.sending')}
           sx={{ flex: 1 }}
         >
-          Confirmar
+          {t('common.confirm')}
         </LoadingButton>
       </Box>
     </Box>

@@ -6,13 +6,23 @@
 
 import { Box, ListItem, ListItemText, Typography, Chip } from "@mui/material";
 
+/**
+ * Props for the ProductListItem component
+ */
 interface ProductListItemProps {
+  /** Product name */
   name: string;
+  /** Total quantity ordered */
   quantity: number;
+  /** Price per unit */
   unitPrice: number;
+  /** Currency code (e.g., EUR, USD) */
   currency: string;
+  /** Optional notes about the product */
   notes?: string;
+  /** How many units have been assigned to people */
   assignedQty?: number;
+  /** Callback when the item is clicked */
   onClick?: () => void;
 }
 
@@ -77,7 +87,7 @@ export const ProductListItem = ({
         <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-end" }}>
           <Chip
             size="small"
-            label={`${assignedQty}/${quantity} asignado`}
+            label={`${assignedQty}/${quantity} assigned`}
             color={isFullyAssigned ? "success" : "default"}
           />
         </Box>

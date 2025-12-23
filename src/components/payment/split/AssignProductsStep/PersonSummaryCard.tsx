@@ -18,10 +18,17 @@ import PersonIcon from "@mui/icons-material/Person";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { PersonSplit, Bill } from "@/types/bill";
 
+/**
+ * Props for the PersonSummaryCard component
+ */
 interface PersonSummaryCardProps {
+  /** Person data with assigned items */
   person: PersonSplit;
+  /** Complete bill data */
   bill: Bill;
+  /** Total amount for this person */
   total: number;
+  /** Callback when removing an item */
   onRemoveItem: (itemId: string) => void;
 }
 

@@ -14,6 +14,7 @@ import { TextField, WarningBox } from "@/components/Shared";
 import { getTotalBill, MOCK_BILL } from "@/lib/mockBill";
 import { LoadingButton, StatusAlert } from "@/components/ui";
 import { personSchema, PersonFormData } from "@/lib/validationSchemas";
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Paper,
@@ -31,6 +32,7 @@ const CURRENT_BILL = MOCK_BILL;
 
 export const BillSummaryStep = () => {
 
+  const { t } = useTranslation();
   const router = useRouter();
 
   const totalBill = useMemo(() => getTotalBill(CURRENT_BILL), []);
@@ -69,7 +71,7 @@ export const BillSummaryStep = () => {
 
     } catch (err) {
       console.error("Error:", err);
-      setError("Error al procesar la solicitud. Por favor, intenta de nuevo.");
+      setError(t('payment.errorProcessing'));
       setLoading(false);
     }
   };
@@ -78,7 +80,7 @@ export const BillSummaryStep = () => {
     <Box>
       {/* Warning section */}
       <WarningBox>
-        Revisa cuidadosamente toda la información. Se enviará un correo electrónico con el enlace de la pasarela de pago.
+        {t('payment.reviewInfo')}
       </WarningBox>
 
       {/* Bill details */}
@@ -86,16 +88,16 @@ export const BillSummaryStep = () => {
         <Box display="flex" alignItems="center" gap={1} mb={2}>
           <ReceiptIcon color="primary" />
           <Typography variant="h6">
-            Detalles de la cuenta
+            {t('bill.details')}
           </Typography>
         </Box>
 
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" color="text.secondary">
-            Mesa: {CURRENT_BILL.table.name} ({CURRENT_BILL.table.id})
+            {t('bill.table')}: {CURRENT_BILL.table.name} ({CURRENT_BILL.table.id})
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Atendido por: {CURRENT_BILL.table.server}
+            {t('bill.servedBy')}: {CURRENT_BILL.table.server}
           </Typography>
         </Box>
 
@@ -105,10 +107,10 @@ export const BillSummaryStep = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>Producto</TableCell>
-              <TableCell align="center">Cant.</TableCell>
-              <TableCell align="right">Precio Unit.</TableCell>
-              <TableCell align="right">Subtotal</TableCell>
+              <TableCell>{t('products.product')}</TableCell>
+              <TableCell align="center">{t('products.quantity')}</TableCell>
+              <TableCell align="right">{t('products.unitPrice')}</TableCell>
+              <TableCell align="right">{t('products.subtotal')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -133,7 +135,7 @@ export const BillSummaryStep = () => {
 
         {/* Total */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Total:</Typography>
+          <Typography variant="h6">{t('bill.totalBill')}:</Typography>
           <Typography variant="h5" color="primary" fontWeight="bold">
             {totalBill.toFixed(2)} {CURRENT_BILL.currency}
           </Typography>
@@ -143,10 +145,10 @@ export const BillSummaryStep = () => {
       {/* Contact form */}
       <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Tus datos
+          {t('payment.yourInfo')}
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={3}>
-          Te enviaremos un correo con el enlace para realizar el pago
+          {t('payment.sendEmailMessage')}
         </Typography>
 
         <TextField
@@ -154,7 +156,7 @@ export const BillSummaryStep = () => {
           control={control}
           errors={errors}
           fullWidth
-          label="Nombre"
+          label={t('people.fullName')}
           sx={{ mb: 2 }}
           disabled={loading || success}
         />
@@ -164,7 +166,7 @@ export const BillSummaryStep = () => {
           control={control}
           errors={errors}
           fullWidth
-          label="Email"
+          label={t('people.email')}
           type="email"
           disabled={loading || success}
         />
@@ -174,7 +176,7 @@ export const BillSummaryStep = () => {
       <StatusAlert
         error={error}
         success={success}
-        successMessage="¡Correo enviado exitosamente! Redirigiendo..."
+        successMessage={t('payment.emailSentSuccess')}
       />
 
       {/* Navigation */}
@@ -185,17 +187,17 @@ export const BillSummaryStep = () => {
           disabled={loading || success}
           sx={{ flex: 1 }}
         >
-          Volver
+          {t('common.back')}
         </Button>
         <LoadingButton
           variant="contained"
           onClick={handleSubmit(onSubmit)}
           disabled={success}
           loading={loading}
-          loadingText="Enviando..."
+          loadingText={t('common.sending')}
           sx={{ flex: 1 }}
         >
-          Confirmar
+          {t('common.confirm')}
         </LoadingButton>
       </Box>
     </Box>

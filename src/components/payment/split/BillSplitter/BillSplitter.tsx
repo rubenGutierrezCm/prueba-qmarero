@@ -14,12 +14,18 @@ import { ConfirmationStep } from "../ConfirmationStep";
 import { QuickAssignDialog } from "../QuickAssignDialog";
 import { AddPersonDialog } from "./AddPersonDialog";
 import { BillSplitterStepper } from "./BillSplitterStepper";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the BillSplitter component
+ */
 interface BillSplitterProps {
+  /** Bill data to be split */
   bill: Bill;
 }
 
 export const BillSplitter = ({ bill }: BillSplitterProps) => {
+  const { t } = useTranslation();
   const [activeStep, setActiveStep] = useState(0);
 
   // Custom hooks for business logic
@@ -29,9 +35,9 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
 
   // Steps configuration
   const steps = [
-    { label: "Configurar personas" },
-    { label: "Asignar productos" },
-    { label: "Confirmar división" },
+    { label: t('stepper.configurePeople') },
+    { label: t('stepper.assignProducts') },
+    { label: t('stepper.confirmSplit') },
   ];
 
   // Check if can proceed to confirmation step
@@ -50,7 +56,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
    */
   const handleOpenQuickAssign = (itemId: string) => {
     if (splitter.people.length === 0) {
-      alert("Primero debes añadir personas");
+      alert(t('people.mustAddFirst'));
       return;
     }
     const existingQuantities = splitter.getExistingQuantities(itemId);

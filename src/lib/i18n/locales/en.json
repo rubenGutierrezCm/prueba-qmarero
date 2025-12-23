@@ -1,0 +1,98 @@
+{
+  "home": {
+    "title": "How do you want to pay?",
+    "subtitle": "Select an option to continue with payment",
+    "paySingle": "I'll pay everything",
+    "payEqual": "Split equally",
+    "paySplit": "Each pays their own"
+  },
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "add": "Add",
+    "assign": "Assign",
+    "loading": "Loading...",
+    "sending": "Sending...",
+    "sent": "Sent",
+    "total": "Total",
+    "currency": "EUR"
+  },
+  "people": {
+    "addPerson": "Add Person",
+    "noPeopleAdded": "No people added yet",
+    "addPeopleDescription": "Add the people who will share the bill",
+    "totalPeople": "Total: {{count}} person",
+    "totalPeople_plural": "Total: {{count}} people",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "mustAddFirst": "You must add people first"
+  },
+  "products": {
+    "clickToAssign": "*Click on each product to assign it to people",
+    "summaryByPerson": "Summary by Person",
+    "assignProduct": "Assign Product",
+    "assignQuantities": "Assign quantities to each person:",
+    "quantity": "Quantity",
+    "available": "Available",
+    "totalToAssign": "Total to assign",
+    "units": "units",
+    "exceedsAvailable": "Assigned quantity exceeds available units",
+    "mustAssignAll": "You must assign all products before continuing",
+    "product": "Product",
+    "unitPrice": "Unit Price",
+    "subtotal": "Subtotal"
+  },
+  "bill": {
+    "totalBill": "Total bill",
+    "totalAssigned": "Total assigned",
+    "remaining": "Remaining",
+    "details": "Bill Details",
+    "table": "Table",
+    "servedBy": "Served by",
+    "product": "Product",
+    "quantity": "Qty.",
+    "unitPrice": "Unit Price",
+    "subtotal": "Subtotal"
+  },
+  "payment": {
+    "fullBillPayment": "Full Bill Payment",
+    "equalSplit": "Equal Split",
+    "splitBill": "Split Bill",
+    "reviewInfo": "Review all information carefully. An email will be sent with the payment gateway link.",
+    "reviewInfoMultiple": "Review all information carefully. An email will be sent to each person with their payment link.",
+    "yourInfo": "Your Information",
+    "sendEmailMessage": "We'll send you an email with the payment link",
+    "name": "Name",
+    "emailsSentSuccess": "Emails sent successfully! Each person will receive their payment link.",
+    "emailSentSuccess": "Email sent successfully! Redirecting...",
+    "errorProcessing": "Error processing request. Please try again.",
+    "splitSummary": "Split Summary",
+    "finalSummary": "Final Summary",
+    "peopleWillReceive": "People who will receive payment link"
+  },
+  "equal": {
+    "title": "Equal Split",
+    "description": "The bill will be divided equally among all people. Each person will pay exactly the same amount.",
+    "splitSummaryTitle": "Split Summary",
+    "numberOfPeople": "Number of people",
+    "amountPerPerson": "Amount per person",
+    "peopleWillPay": "People who will pay",
+    "amountToPay": "Amount to pay",
+    "sendEmailsAndProcess": "Send emails and process",
+    "reviewEqualAmount": "Review all information carefully. An email will be sent to each person with their payment link for an equal amount of {{amount}} {{currency}}."
+  },
+  "stepper": {
+    "configurePeople": "Configure people",
+    "assignProducts": "Assign products",
+    "confirmSplit": "Confirm split",
+    "sendPayments": "Send payments"
+  },
+  "success": {
+    "emailsSent": "Emails sent!",
+    "emailsSentDescription": "The emails have been sent successfully. Each person will receive a unique link to make their payment.",
+    "title": "Payment successful!",
+    "description": "Your payment has been processed successfully. You will receive a confirmation email shortly."
+  }
+}

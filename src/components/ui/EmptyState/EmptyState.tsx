@@ -7,9 +7,15 @@
 import { Box, Typography } from "@mui/material";
 import { ReactNode } from "react";
 
+/**
+ * Props for the EmptyState component
+ */
 interface EmptyStateProps {
+  /** Icon or illustration to display */
   icon: ReactNode;
+  /** Main heading text */
   title: string;
+  /** Optional description text */
   description?: string;
 }
 

@@ -56,17 +56,22 @@ interface BillSplitterDB extends DBSchema {
 
 let dbInstance: IDBPDatabase<BillSplitterDB> | null = null;
 
+/**
+ * Get or create the IndexedDB database instance
+ * Creates stores and indexes if they don't exist
+ * @returns Promise resolving to the database instance
+ */
 export async function getDB() {
   if (dbInstance) return dbInstance;
 
   dbInstance = await openDB<BillSplitterDB>("bill-splitter-db", 1, {
     upgrade(db) {
-      // Store para sesiones de división
+      // Store for bill splitting sessions
       if (!db.objectStoreNames.contains("sessions")) {
         db.createObjectStore("sessions", { keyPath: "sessionId" });
       }
 
-      // Store para pagos individuales
+      // Store for individual payments
       if (!db.objectStoreNames.contains("payments")) {
         const paymentStore = db.createObjectStore("payments", {
           keyPath: "paymentId",
@@ -83,7 +88,7 @@ export async function getDB() {
   return dbInstance;
 }
 
-// ===== SESIONES =====
+// ===== SESSIONS =====
 export async function saveSession(session: {
   sessionId: string;
   bill: Bill;
@@ -99,23 +104,38 @@ export async function saveSession(session: {
   });
 }
 
+/**
+ * Load a session by its ID
+ * @param sessionId - The session ID to load
+ * @returns Promise resolving to the session data or undefined
+ */
 export async function loadSession(sessionId: string) {
   const db = await getDB();
   return db.get("sessions", sessionId);
 }
 
+/**
+ * Delete a session and all its associated payments
+ * @param sessionId - The session ID to delete
+ */
 export async function deleteSession(sessionId: string) {
   const db = await getDB();
   await db.delete("sessions", sessionId);
   
-  // También eliminar todos los pagos asociados
+  // Also delete all associated payments
   const payments = await getPaymentsBySession(sessionId);
   for (const payment of payments) {
     await db.delete("payments", payment.paymentId);
   }
 }
 
-// ===== PAGOS =====
+// ===== PAYMENTS =====
+
+/**
+ * Create a new payment record
+ * @param payment - Payment data to create
+ * @returns Promise resolving to the generated payment ID
+ */
 export async function createPayment(payment: {
   sessionId: string;
   personId: string;
@@ -146,23 +166,43 @@ export async function createPayment(payment: {
   return paymentId;
 }
 
+/**
+ * Get a payment by its ID
+ * @param paymentId - The payment ID to retrieve
+ * @returns Promise resolving to the payment data or undefined
+ */
 export async function getPayment(paymentId: string) {
   const db = await getDB();
   return db.get("payments", paymentId);
 }
 
+/**
+ * Get all payments for a specific session
+ * @param sessionId - The session ID to query
+ * @returns Promise resolving to array of payments
+ */
 export async function getPaymentsBySession(sessionId: string) {
   const db = await getDB();
   const index = db.transaction("payments").store.index("sessionId");
   return index.getAll(IDBKeyRange.only(sessionId));
 }
 
+/**
+ * Get all payments for a specific email address
+ * @param email - The email address to query
+ * @returns Promise resolving to array of payments
+ */
 export async function getPaymentsByEmail(email: string) {
   const db = await getDB();
   const index = db.transaction("payments").store.index("personEmail");
   return index.getAll(IDBKeyRange.only(email));
 }
 
+/**
+ * Mark a payment as completed
+ * @param paymentId - The payment ID to mark as paid
+ * @param paymentIntentId - Stripe payment intent ID
+ */
 export async function markPaymentAsPaid(
   paymentId: string,
   paymentIntentId: string
@@ -176,7 +216,7 @@ export async function markPaymentAsPaid(
     payment.paidAt = Date.now();
     await db.put("payments", payment);
     
-    // Actualizar también el estado en la sesión
+    // Also update the status in the session
     const session = await loadSession(payment.sessionId);
     if (session) {
       const person = session.people.find((p) => p.id === payment.personId);
@@ -188,6 +228,10 @@ export async function markPaymentAsPaid(
   }
 }
 
+/**
+ * Get all payments in the database
+ * @returns Promise resolving to array of all payments
+ */
 export async function getAllPayments() {
   const db = await getDB();
   return db.getAll("payments");

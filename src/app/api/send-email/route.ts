@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   try {
     const { to, subject, html, paymentLink } = await request.json();
 
-    // Configurar transporter con Gmail
+    // Configure transporter with Gmail
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -18,9 +18,9 @@ export async function POST(request: Request) {
       },
     });
 
-    // Enviar correo
+    // Send email
     await transporter.sendMail({
-      from: `"Qmarero - División de Cuenta" <${process.env.EMAIL_USER || "rubengutierrezcm@gmail.com"}>`,
+      from: `"Qmarero - Bill Splitting" <${process.env.EMAIL_USER || "rubengutierrezcm@gmail.com"}>`,
       to,
       subject,
       html,
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error sending email:", error);
     return NextResponse.json(
-      { error: "Error al enviar el correo" },
+      { error: "Error sending email" },
       { status: 500 }
     );
   }

@@ -11,15 +11,15 @@ import { z } from "zod";
 export const personSchema = z.object({
   name: z
     .string()
-    .min(1, "El nombre es obligatorio")
-    .min(2, "El nombre debe tener al menos 2 caracteres")
+    .min(1, "Name is required")
+    .min(2, "Name must be at least 2 characters")
     .refine((val) => val.trim().length >= 2, {
-      message: "El nombre no puede estar vacío",
+      message: "Name cannot be empty",
     }),
   email: z
     .string()
-    .min(1, "El email es obligatorio")
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Email inválido"),
+    .min(1, "Email is required")
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email"),
 });
 
 /**
@@ -34,10 +34,10 @@ export const quantitySchema = (max: number) =>
       return typeof val === 'number' ? val : parseInt(String(val)) || 0;
     })
     .refine((val) => val >= 0, {
-      message: "No puede ser negativo",
+      message: "Cannot be negative",
     })
     .refine((val) => val <= max, {
-      message: "Excede disponibles",
+      message: "Exceeds available",
     });
 
 /**

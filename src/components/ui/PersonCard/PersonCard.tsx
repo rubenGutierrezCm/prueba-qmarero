@@ -9,10 +9,17 @@ import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+/**
+ * Props for the PersonCard component
+ */
 interface PersonCardProps {
+  /** Person's name */
   name: string;
+  /** Person's email address */
   email: string;
+  /** Callback function when delete button is clicked */
   onDelete?: () => void;
+  /** Optional child elements to render below email */
   children?: React.ReactNode;
 }
 

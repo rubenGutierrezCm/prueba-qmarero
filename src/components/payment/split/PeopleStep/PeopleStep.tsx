@@ -15,12 +15,20 @@ import AddIcon from "@mui/icons-material/Add";
 import PersonIcon from "@mui/icons-material/Person";
 import { useRouter } from "next/navigation";
 import { PersonSplit } from "@/types/bill";
-import { PersonCard, EmptyState } from "@/components/ui";
+import { PersonCard, EmptyState, StepNavigation } from "@/components/ui";
+import { useTranslation } from 'react-i18next';
 
-interface PeopleStepProps {
+/**
+ * Props for the PeopleStep component
+ */
+interface PeopleStepProps {  
+  /** List of people sharing the bill */
   people: PersonSplit[];
+  /** Callback when add person button is clicked */
   onAddPerson: () => void;
+  /** Callback when removing a person */
   onRemovePerson: (personId: string) => void;
+  /** Callback when continuing to next step */
   onContinue: () => void;
 }
 
@@ -31,6 +39,7 @@ export const PeopleStep = ({
   onContinue,
 }: PeopleStepProps) => {
   const router = useRouter();
+  const { t } = useTranslation();
   
   return (
     <Box>
@@ -50,7 +59,7 @@ export const PeopleStep = ({
             onClick={onAddPerson}
             sx={{ width: { xs: '100%', sm: 'auto' } }}
           >
-            Añadir persona
+            {t('people.addPerson')}
           </Button>
         </Box>
         <Divider sx={{ mb: 3 }} />
@@ -59,8 +68,8 @@ export const PeopleStep = ({
         {people.length === 0 ? (
           <EmptyState
             icon={<PersonIcon />}
-            title="No hay personas añadidas"
-            description="Añade las personas que van a compartir la cuenta"
+            title={t('people.noPeopleAdded')}
+            description={t('people.addPeopleDescription')}
           />
         ) : (
           <Box>
@@ -98,28 +107,18 @@ export const PeopleStep = ({
               gap={2}
             >
               <Typography variant="body1">
-                Total: {people.length} persona{people.length !== 1 ? "s" : ""}
+                {t('people.totalPeople', { count: people.length })}
               </Typography>
             </Box>
           </Box>
         )}       
       </Paper>
       
-      {/* Navigation buttons */}
-      <Box display="flex" justifyContent="space-between" mt={3}>
-        <Button
-          variant="outlined"
-          onClick={() => router.push('/')}
-        >
-          volver
-        </Button>
-        <Button
-          variant="contained"
-          onClick={onContinue}
-        >
-          Continuar
-        </Button>
-      </Box>
+      <StepNavigation
+        onBack={() => router.push('/')}
+        onContinue={onContinue}
+        continueDisabled={people.length === 0}
+      />
     </Box>
   );
 };

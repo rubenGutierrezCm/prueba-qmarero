@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST() {
-  const amount = 4850; // céntimos
+  const amount = 4850; // cents
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount,

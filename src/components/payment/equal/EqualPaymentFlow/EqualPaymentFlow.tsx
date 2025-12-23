@@ -13,12 +13,18 @@ import { PeopleStep } from "@/components/payment/split/PeopleStep";
 import { EqualConfirmationStep } from "../EqualConfirmationStep";
 import { AddPersonDialog } from "@/components/payment/split/BillSplitter/AddPersonDialog";
 import { EqualPaymentStepper } from "./EqualPaymentStepper";
+import { useTranslation } from 'react-i18next';
 
+/**
+ * Props for the EqualPaymentFlow component
+ */
 interface EqualPaymentFlowProps {
+  /** Bill data to be split equally */
   bill: Bill;
 }
 
 export const EqualPaymentFlow = ({ bill }: EqualPaymentFlowProps) => {
+  const { t } = useTranslation();
   const [activeStep, setActiveStep] = useState(0);
 
   // Custom hooks
@@ -27,8 +33,8 @@ export const EqualPaymentFlow = ({ bill }: EqualPaymentFlowProps) => {
 
   // Steps configuration
   const steps = [
-    { label: "Configurar personas" },
-    { label: "Enviar pagos" },
+    { label: t('stepper.configurePeople') },
+    { label: t('stepper.sendPayments') },
   ];
 
   /**

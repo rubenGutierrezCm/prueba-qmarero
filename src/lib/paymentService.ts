@@ -51,7 +51,14 @@ export interface EmailParams {
 
 /**
  * Creates a payment and sends email notification
- * @returns paymentId
+ * This function performs three main steps:
+ * 1. Creates payment record in IndexedDB
+ * 2. Generates payment link URL
+ * 3. Sends email with payment details and link
+ * @param params - Payment creation parameters
+ * @param emailParams - Email template parameters (without payment link)
+ * @returns Promise resolving to the created payment ID
+ * @throws Error if email sending fails
  */
 export async function createPaymentAndSendEmail(
   params: CreatePaymentParams,
@@ -91,7 +98,7 @@ export async function createPaymentAndSendEmail(
   });
 
   if (!response.ok) {
-    throw new Error("Error al enviar el correo");
+    throw new Error("Error sending email");
   }
 
   return paymentId;
@@ -100,6 +107,9 @@ export async function createPaymentAndSendEmail(
 /**
  * Processes a complete payment session for single person
  * Saves session, creates payment, and sends email
+ * This is used when one person pays the entire bill
+ * @param params - Parameters containing bill and person information
+ * @returns Promise resolving to session ID and payment ID
  */
 export async function processSinglePayment(params: {
   bill: Bill;
@@ -171,6 +181,9 @@ export async function processSinglePayment(params: {
 /**
  * Processes payments for multiple people
  * Saves session, creates payments for each person, and sends emails
+ * This is used for split bills where different people pay different amounts
+ * @param params - Parameters including session, bill, people, and calculation functions
+ * @returns Promise resolving to array of created payment IDs
  */
 export async function processMultiplePayments(params: {
   sessionId: string;
