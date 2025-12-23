@@ -3,7 +3,7 @@
  * Generates HTML email with payment details and link
  */
 
-import { Bill, PersonSplit } from "@/types/bill";
+import { Bill } from "@/types/bill";
 
 interface EmailTemplateParams {
   personName: string;
@@ -159,40 +159,4 @@ export const generatePaymentEmail = (params: EmailTemplateParams): string => {
       </body>
     </html>
   `;
-};
-
-/**
- * Helper to create email params from person and bill data
- * @param person - Person splitting the bill
- * @param bill - The bill data
- * @param personTotal - Total amount for this person
- * @param paymentLink - Payment link URL
- * @returns Email template parameters
- */
-export const createEmailParams = (
-  person: PersonSplit,
-  bill: Bill,
-  personTotal: number,
-  paymentLink: string
-): EmailTemplateParams => {
-  const products = person.items.map((item) => {
-    const billItem = bill.items.find((bi) => bi.id === item.itemId);
-    return {
-      name: billItem?.name || "Unknown product",
-      quantity: item.quantity,
-      unitPrice: billItem?.unitPrice || 0,
-      subtotal: (billItem?.unitPrice || 0) * item.quantity,
-    };
-  });
-
-  return {
-    personName: person.name,
-    tableName: bill.table.name,
-    tableId: bill.table.id,
-    server: bill.table.server,
-    products,
-    total: personTotal,
-    currency: bill.currency,
-    paymentLink,
-  };
 };

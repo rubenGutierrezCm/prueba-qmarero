@@ -1,4 +1,3 @@
-export { StripeProvider } from "./StripeProvider";
 export { CenteredMessagePage } from "./CenteredMessagePage";
 export { PaymentMethodHeader } from "./PaymentMethodHeader";
 export { TextField } from "./TextField";
