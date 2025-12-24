@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { to, subject, html, paymentLink } = await request.json();
+    const { to, subject, html } = await request.json();
 
     // Configure transporter with Gmail
     const transporter = nodemailer.createTransport({

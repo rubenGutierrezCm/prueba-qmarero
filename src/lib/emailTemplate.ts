@@ -3,8 +3,6 @@
  * Generates HTML email with payment details and link
  */
 
-import { Bill } from "@/types/bill";
-
 interface EmailTemplateParams {
   personName: string;
   tableName: string;

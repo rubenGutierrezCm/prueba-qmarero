@@ -17,16 +17,19 @@ export default function Providers({
 }: {
   children: React.ReactNode;
 }) {
-  const [isI18nInitialized, setIsI18nInitialized] = useState(false);
+  const [isI18nInitialized, setIsI18nInitialized] = useState(i18n.isInitialized);
 
   useEffect(() => {
     // Ensure i18n is initialized
-    if (i18n.isInitialized) {
-      setIsI18nInitialized(true);
-    } else {
-      i18n.on('initialized', () => {
+    if (!i18n.isInitialized) {
+      const handleInitialized = () => {
         setIsI18nInitialized(true);
-      });
+      };
+      i18n.on('initialized', handleInitialized);
+      
+      return () => {
+        i18n.off('initialized', handleInitialized);
+      };
     }
   }, []);
 

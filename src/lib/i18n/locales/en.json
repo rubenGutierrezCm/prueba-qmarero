@@ -1,5 +1,12 @@
 {
   "home": {
+    "welcomeTitle": "Welcome to QMarero",
+    "welcomeSubtitle": "Enter your table barcode to get started",
+    "barcodeLabel": "Table barcode",
+    "barcodePlaceholder": "E.g: TABLE-001",
+    "barcodeRequired": "Barcode is required",
+    "continueButton": "Continue",
+    "tableCode": "Table",
     "title": "How do you want to pay?",
     "subtitle": "Select an option to continue with payment",
     "paySingle": "I'll pay everything",

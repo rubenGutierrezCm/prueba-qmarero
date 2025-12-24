@@ -9,9 +9,8 @@ import { Box } from "@mui/material";
 import { Bill } from "@/types/bill";
 import { useEqualPayment } from "@/hooks/useEqualPayment";
 import { usePersonDialog } from "@/hooks";
-import { PeopleStep, PaymentStepper } from "@/components/Shared";
+import { PeopleStep, PaymentStepper, AddPersonDialog } from "@/components/Shared";
 import { EqualConfirmationStep } from "../EqualConfirmationStep";
-import { AddPersonDialog } from "@/components/payment/split/BillSplitter/AddPersonDialog";
 import { useTranslation } from 'react-i18next';
 
 /**

@@ -1,5 +1,12 @@
 {
   "home": {
+    "welcomeTitle": "Bienvenido a QMarero",
+    "welcomeSubtitle": "Introduce el código de barras de tu mesa para comenzar",
+    "barcodeLabel": "Código de barras de la mesa",
+    "barcodePlaceholder": "Ej: MESA-001",
+    "barcodeRequired": "El código de barras es obligatorio",
+    "continueButton": "Continuar",
+    "tableCode": "Mesa",
     "title": "¿Cómo quieres pagar?",
     "subtitle": "Selecciona una opción para continuar con el pago",
     "paySingle": "Pago todo yo",

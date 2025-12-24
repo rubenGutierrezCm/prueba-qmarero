@@ -8,11 +8,10 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { Bill } from "@/types/bill";
 import { useBillSplitter, usePersonDialog, useQuickAssignDialog } from "@/hooks";
-import { PeopleStep, PaymentStepper } from "@/components/Shared";
+import { PeopleStep, PaymentStepper, AddPersonDialog } from "@/components/Shared";
 import { AssignProductsStep } from "../AssignProductsStep";
 import { ConfirmationStep } from "../ConfirmationStep";
 import { QuickAssignDialog } from "../QuickAssignDialog";
-import { AddPersonDialog } from "./AddPersonDialog";
 import { useTranslation } from 'react-i18next';
 
 /**

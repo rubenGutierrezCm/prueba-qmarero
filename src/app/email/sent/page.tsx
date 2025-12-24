@@ -1,11 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { CenteredMessagePage } from "@/components/Shared";
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'next/navigation';
 
-export default function EmailSentPage() {
+function EmailSentContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const method = searchParams.get('method') || 'split'; // split, single, equal
@@ -38,5 +39,13 @@ export default function EmailSentPage() {
       title={getTitle()}
       description={getDescription()}
     />
+  );
+}
+
+export default function EmailSentPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailSentContent />
+    </Suspense>
   );
 }

@@ -1,3 +1,4 @@
+export { AddPersonDialog } from "./AddPersonDialog";
 export { CenteredMessagePage } from "./CenteredMessagePage";
 export { PaymentMethodHeader } from "./PaymentMethodHeader";
 export { PaymentStepper } from "./PaymentStepper";
