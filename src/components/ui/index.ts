@@ -9,4 +9,5 @@ export type { PaymentPerson } from "./PaymentPersonList/PaymentPersonList";
 export { PaymentSummary } from "./PaymentSummary/PaymentSummary";
 export { ConfirmationActions } from "./ConfirmationActions/ConfirmationActions";
 export { BillDetailsCard } from "./BillDetailsCard/BillDetailsCard";
+export { PeopleListManager } from "./PeopleListManager/PeopleListManager";
 

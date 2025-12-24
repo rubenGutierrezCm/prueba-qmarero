@@ -9,10 +9,9 @@ import { Box } from "@mui/material";
 import { Bill } from "@/types/bill";
 import { useEqualPayment } from "@/hooks/useEqualPayment";
 import { usePersonDialog } from "@/hooks";
-import { PeopleStep } from "@/components/payment/split/PeopleStep";
+import { PeopleStep, PaymentStepper } from "@/components/Shared";
 import { EqualConfirmationStep } from "../EqualConfirmationStep";
 import { AddPersonDialog } from "@/components/payment/split/BillSplitter/AddPersonDialog";
-import { EqualPaymentStepper } from "./EqualPaymentStepper";
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -48,7 +47,7 @@ export const EqualPaymentFlow = ({ bill }: EqualPaymentFlowProps) => {
   return (
     <Box>
       {/* Stepper navigation */}
-      <EqualPaymentStepper activeStep={activeStep} steps={steps} />
+      <PaymentStepper activeStep={activeStep} steps={steps} />
 
       <Box sx={{ px: { xs: 1, sm: 2, md: 0 } }}>
         {/* Step 1: Configure people */}

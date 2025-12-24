@@ -22,10 +22,6 @@ interface PersonInfoFormProps {
   loading?: boolean;
   /** Whether the form submission was successful */
   success?: boolean;
-  /** Optional custom title translation key (defaults to 'payment.yourInfo') */
-  titleKey?: string;
-  /** Optional custom description translation key (defaults to 'payment.sendEmailMessage') */
-  descriptionKey?: string;
 }
 
 export const PersonInfoForm = ({
@@ -33,18 +29,16 @@ export const PersonInfoForm = ({
   errors,
   loading = false,
   success = false,
-  titleKey = 'payment.yourInfo',
-  descriptionKey = 'payment.sendEmailMessage',
 }: PersonInfoFormProps) => {
   const { t } = useTranslation();
 
   return (
     <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
       <Typography variant="h6" gutterBottom>
-        {t(titleKey)}
+        {t('payment.yourInfo')}
       </Typography>
       <Typography variant="body2" color="text.secondary" mb={3}>
-        {t(descriptionKey)}
+        {t('payment.sendEmailMessage')}
       </Typography>
 
       <TextField

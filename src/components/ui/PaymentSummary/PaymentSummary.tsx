@@ -28,8 +28,6 @@ interface PaymentSummaryProps {
   currency: string;
   /** Optional translation key for people count label (defaults to 'people.totalPeople') */
   peopleCountLabelKey?: string;
-  /** Optional translation key for amount per person label (defaults to 'equal.amountPerPerson') */
-  amountPerPersonLabelKey?: string;
 }
 
 export const PaymentSummary = ({
@@ -39,7 +37,6 @@ export const PaymentSummary = ({
   amountPerPerson,
   currency,
   peopleCountLabelKey = 'people.totalPeople',
-  amountPerPersonLabelKey = 'equal.amountPerPerson',
 }: PaymentSummaryProps) => {
   const { t } = useTranslation();
 
@@ -64,7 +61,7 @@ export const PaymentSummary = ({
       <Divider sx={{ my: 2 }} />
       <Box display="flex" justifyContent="space-between">
         <Typography variant="h6">
-          {t(amountPerPersonLabelKey)}:
+          {t('equal.amountPerPerson')}:
         </Typography>
         <Typography variant="h6" color="primary" fontWeight="bold">
           {amountPerPerson.toFixed(2)} {currency}

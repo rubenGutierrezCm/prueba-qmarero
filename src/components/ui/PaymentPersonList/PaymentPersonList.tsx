@@ -38,8 +38,6 @@ interface PaymentPersonListProps<T extends PaymentPerson = PaymentPerson> {
   currency: string;
   /** Translation key for the title (e.g., 'payment.peopleWillReceive') */
   titleKey: string;
-  /** Optional translation key for the amount label (defaults to 'equal.amountToPay') */
-  amountLabelKey?: string;
 }
 
 export const PaymentPersonList = <T extends PaymentPerson = PaymentPerson>({
@@ -47,7 +45,6 @@ export const PaymentPersonList = <T extends PaymentPerson = PaymentPerson>({
   getAmount,
   currency,
   titleKey,
-  amountLabelKey = 'equal.amountToPay',
 }: PaymentPersonListProps<T>) => {
   const { t } = useTranslation();
 
@@ -71,7 +68,7 @@ export const PaymentPersonList = <T extends PaymentPerson = PaymentPerson>({
                       {person.email}
                     </Typography>
                     <Typography component="span" variant="body2" display="block" fontWeight="medium">
-                      {t(amountLabelKey)}: {amount.toFixed(2)} {currency}
+                      {t('equal.amountToPay')}: {amount.toFixed(2)} {currency}
                     </Typography>
                   </>
                 }

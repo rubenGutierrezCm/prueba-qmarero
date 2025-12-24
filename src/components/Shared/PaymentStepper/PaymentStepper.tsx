@@ -1,5 +1,6 @@
 /**
- * EqualPaymentStepper - Stepper component for equal payment flow
+ * PaymentStepper - Reusable stepper component for payment flows
+ * Displays current step and progress through the flow
  */
 "use client";
 
@@ -9,12 +10,12 @@ interface Step {
   label: string;
 }
 
-interface EqualPaymentStepperProps {
+interface PaymentStepperProps {
   activeStep: number;
   steps: Step[];
 }
 
-export const EqualPaymentStepper = ({ activeStep, steps }: EqualPaymentStepperProps) => {
+export const PaymentStepper = ({ activeStep, steps }: PaymentStepperProps) => {
   return (
     <Box sx={{ mb: 3 }}>
       <Stepper activeStep={activeStep} alternativeLabel>

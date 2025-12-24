@@ -20,14 +20,6 @@ interface ConfirmationActionsProps {
   loading?: boolean;
   /** Whether the action was successful */
   success?: boolean;
-  /** Optional custom label for the back button (defaults to 'common.back') */
-  backLabel?: string;
-  /** Optional custom label for the confirm button (defaults to 'common.confirm') */
-  confirmLabel?: string;
-  /** Optional custom label for the loading state (defaults to 'common.sending') */
-  loadingLabel?: string;
-  /** Whether to show the back button */
-  showBack?: boolean;
 }
 
 export const ConfirmationActions = ({
@@ -35,34 +27,28 @@ export const ConfirmationActions = ({
   onConfirm,
   loading = false,
   success = false,
-  backLabel,
-  confirmLabel,
-  loadingLabel,
-  showBack = true,
 }: ConfirmationActionsProps) => {
   const { t } = useTranslation();
 
   return (
     <Box display="flex" justifyContent="space-between" gap={2}>
-      {showBack && (
-        <Button
-          variant="outlined"
-          onClick={onBack}
-          disabled={loading || success}
-          sx={{ flex: 1 }}
-        >
-          {backLabel || t('common.back')}
-        </Button>
-      )}
+      <Button
+        variant="outlined"
+        onClick={onBack}
+        disabled={loading || success}
+        sx={{ flex: 1 }}
+      >
+        {t('common.back')}
+      </Button>
       <LoadingButton
         variant="contained"
         onClick={onConfirm}
         disabled={success}
         loading={loading}
-        loadingText={loadingLabel || t('common.sending')}
-        sx={{ flex: showBack ? 1 : undefined, width: showBack ? undefined : '100%' }}
+        loadingText={t('common.sending')}
+        sx={{ flex: 1 }}
       >
-        {confirmLabel || t('common.confirm')}
+        {t('common.confirm')}
       </LoadingButton>
     </Box>
   );

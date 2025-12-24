@@ -8,12 +8,11 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { Bill } from "@/types/bill";
 import { useBillSplitter, usePersonDialog, useQuickAssignDialog } from "@/hooks";
-import { PeopleStep } from "../PeopleStep";
+import { PeopleStep, PaymentStepper } from "@/components/Shared";
 import { AssignProductsStep } from "../AssignProductsStep";
 import { ConfirmationStep } from "../ConfirmationStep";
 import { QuickAssignDialog } from "../QuickAssignDialog";
 import { AddPersonDialog } from "./AddPersonDialog";
-import { BillSplitterStepper } from "./BillSplitterStepper";
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -77,7 +76,7 @@ export const BillSplitter = ({ bill }: BillSplitterProps) => {
   return (
     <Box>
       {/* Stepper navigation */}
-      <BillSplitterStepper activeStep={activeStep} steps={steps} />
+      <PaymentStepper activeStep={activeStep} steps={steps} />
 
       <Box sx={{ px: { xs: 1, sm: 2, md: 0 } }}>
         {/* Step 1: Configure people */}
