@@ -23,7 +23,7 @@
     "addPerson": "Ajouter une personne",
     "noPeopleAdded": "Aucune personne ajoutée",
     "addPeopleDescription": "Ajoutez les personnes qui partageront l'addition",
-    "totalPeople": "Total : {{count}} personne",
+    "totalPeople": "N° Personnes",
     "totalPeople_plural": "Total : {{count}} personnes",
     "fullName": "Nom complet",
     "email": "Adresse e-mail",

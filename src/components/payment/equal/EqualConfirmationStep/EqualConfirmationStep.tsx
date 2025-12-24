@@ -7,16 +7,9 @@
 import { useState } from "react";
 import {
   Box,
-  Paper,
-  Typography,
   Button,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
-import { LoadingButton, StatusAlert } from "@/components/ui";
-import PersonIcon from "@mui/icons-material/Person";
+import { LoadingButton, StatusAlert, PaymentPersonList, PaymentSummary } from "@/components/ui";
 import { PersonSplit, Bill } from "@/types/bill";
 import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
 import { WarningBox } from "@/components/Shared";
@@ -98,52 +91,21 @@ export const EqualConfirmationStep = ({
       </WarningBox>
 
       {/* Summary */}
-      <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          {t('payment.finalSummary')}
-        </Typography>
-        
-        <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body1">{t('bill.totalBill')}:</Typography>
-          <Typography variant="body1" fontWeight="bold">
-            {totalBill.toFixed(2)} {currency}
-          </Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body1">{t('people.totalPeople', { count: people.length }).replace('Total: ', '')}:</Typography>
-          <Typography variant="body1" fontWeight="bold">
-            {people.length}
-          </Typography>
-        </Box>
-        <Divider sx={{ my: 2 }} />
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="h6">
-            {t('equal.amountPerPerson')}:
-          </Typography>
-          <Typography variant="h6" color="primary" fontWeight="bold">
-            {amountPerPerson.toFixed(2)} {currency}
-          </Typography>
-        </Box>
-      </Paper>
+      <PaymentSummary
+        titleKey="payment.finalSummary"
+        totalBill={totalBill}
+        peopleCount={people.length}
+        amountPerPerson={amountPerPerson}
+        currency={currency}
+      />
 
       {/* People list */}
-      <Paper elevation={1} sx={{ p: 3, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          {t('payment.peopleWillReceive')}
-        </Typography>
-        
-        <List>
-          {people.map((person) => (
-            <ListItem key={person.id}>
-              <PersonIcon color="primary" sx={{ mr: 2 }} />
-              <ListItemText
-                primary={person.name}
-                secondary={`${person.email} • ${amountPerPerson.toFixed(2)} ${currency}`}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
+      <PaymentPersonList
+        people={people}
+        getAmount={() => amountPerPerson}
+        currency={currency}
+        titleKey="payment.peopleWillReceive"
+      />
 
       {/* Status messages */}
       <StatusAlert

@@ -4,4 +4,7 @@ export { StepNavigation } from "./StepNavigation/StepNavigation";
 export { ProductListItem } from "./ProductListItem/ProductListItem";
 export { LoadingButton } from "./LoadingButton/LoadingButton";
 export { StatusAlert } from "./StatusAlert/StatusAlert";
+export { PaymentPersonList } from "./PaymentPersonList/PaymentPersonList";
+export type { PaymentPerson } from "./PaymentPersonList/PaymentPersonList";
+export { PaymentSummary } from "./PaymentSummary/PaymentSummary";
 

@@ -13,7 +13,7 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+import { PaymentPersonList } from "@/components/ui";
 import { PersonSplit } from "@/types/bill";
 import { Bill } from "@/types/bill";
 import { StatusAlert, StepNavigation } from "@/components/ui";
@@ -103,41 +103,12 @@ export const ConfirmationStep = ({
           variant="outlined"
           sx={{ p: { xs: 2, sm: 3 }, mb: 3, bgcolor: "background.default" }}
         >
-          <Typography variant="h6" gutterBottom>
-            {t('payment.splitSummary')}
-          </Typography>
-          <Divider sx={{ my: 2 }} />
-
-          {people.map((person) => {
-            const personTotal = calculatePersonTotal(person);
-            return (
-              <Box
-                key={person.id}
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  py: 1,
-                  px: { xs: 1, sm: 2 },
-                  mb: 1,
-                  bgcolor: "background.paper",
-                  borderRadius: 1,
-                  flexWrap: "wrap",
-                  gap: 1,
-                }}
-              >
-                <Box display="flex" alignItems="center" gap={1}>
-                  <PersonIcon color="primary" />
-                  <Typography variant="body1" fontWeight="medium">
-                    {person.name}
-                  </Typography>
-                </Box>
-                <Typography variant="h6" color="primary" sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-                  {personTotal.toFixed(2)} {currency}
-                </Typography>
-              </Box>
-            );
-          })}
+          <PaymentPersonList
+            people={people}
+            getAmount={(person) => calculatePersonTotal(person)}
+            currency={currency}
+            titleKey="payment.splitSummary"
+          />
 
           <Divider sx={{ my: 2 }} />
 
