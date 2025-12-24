@@ -7,8 +7,7 @@
 import { Box, Typography, List } from "@mui/material";
 import { Bill, PersonSplit } from "@/types/bill";
 import { ProductListItem } from "@/components/ui";
-import { PersonSummaryCard } from "./PersonSummaryCard";
-import { AssignmentSummary } from "./AssignmentSummary";
+import { PeopleSummaryPanel } from "./PeopleSummaryPanel";
 import { StepNavigation } from "@/components/ui";
 import { useTranslation } from 'react-i18next';
 
@@ -92,31 +91,14 @@ export const AssignProductsStep = ({
         </Box>
 
         {/* Right column: People summary */}
-        <Box>
-          <Typography variant="h6" textAlign="center" gutterBottom>
-            {t('products.summaryByPerson')}
-          </Typography>
-
-          {/* Summary of total assigned */}
-          <AssignmentSummary
-            totalAssigned={totalAssigned}
-            totalBill={totalBill}
-            currency={bill.currency}
-          />
-
-          {/* List of people with their assigned products */}
-          <Box>
-            {people.map((person) => (
-              <PersonSummaryCard
-                key={person.id}
-                person={person}
-                bill={bill}
-                total={calculatePersonTotal(person)}
-                onRemoveItem={(itemId) => onRemoveItemFromPerson(person.id, itemId)}
-              />
-            ))}
-          </Box>
-        </Box>
+        <PeopleSummaryPanel
+          people={people}
+          bill={bill}
+          totalAssigned={totalAssigned}
+          totalBill={totalBill}
+          calculatePersonTotal={calculatePersonTotal}
+          onRemoveItemFromPerson={onRemoveItemFromPerson}
+        />
       </Box>
 
       {/* Navigation */}
