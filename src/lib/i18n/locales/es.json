@@ -23,8 +23,7 @@
     "addPerson": "Añadir persona",
     "noPeopleAdded": "No hay personas añadidas",
     "addPeopleDescription": "Añade las personas que van a compartir la cuenta",
-    "totalPeople": "N° Personas",
-    "totalPeople_plural": "Total: {{count}} personas",
+    "totalPeople": "Total: {{count}} personas",
     "fullName": "Nombre completo",
     "email": "Correo electrónico",
     "mustAddFirst": "Debes añadir personas primero"

@@ -7,9 +7,8 @@
 import { useState } from "react";
 import {
   Box,
-  Button,
 } from "@mui/material";
-import { LoadingButton, StatusAlert, PaymentPersonList, PaymentSummary } from "@/components/ui";
+import { StatusAlert, PaymentPersonList, PaymentSummary, ConfirmationActions } from "@/components/ui";
 import { PersonSplit, Bill } from "@/types/bill";
 import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
 import { WarningBox } from "@/components/Shared";
@@ -115,25 +114,12 @@ export const EqualConfirmationStep = ({
       />
 
       {/* Actions */}
-      <Box display="flex" justifyContent="space-between" gap={2}>
-        <Button
-          variant="outlined"
-          onClick={onBack}
-          disabled={loading || success}
-          sx={{ flex: 1 }}
-        >
-          {t('common.back')}
-        </Button>
-        <LoadingButton
-          onClick={handleConfirmAndSendEmails}
-          disabled={success}
-          loading={loading}
-          loadingText={t('common.sending')}
-          sx={{ flex: 1 }}
-        >
-          {t('common.confirm')}
-        </LoadingButton>
-      </Box>
+      <ConfirmationActions
+        onBack={onBack}
+        onConfirm={handleConfirmAndSendEmails}
+        loading={loading}
+        success={success}
+      />
     </Box>
   );
 };

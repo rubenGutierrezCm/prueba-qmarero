@@ -23,8 +23,7 @@
     "addPerson": "Add Person",
     "noPeopleAdded": "No people added yet",
     "addPeopleDescription": "Add the people who will share the bill",
-    "totalPeople": "N° People",
-    "totalPeople_plural": "Total: {{count}} people",
+    "totalPeople": "Total: {{count}} people",
     "fullName": "Full Name",
     "email": "Email Address",
     "mustAddFirst": "You must add people first"

@@ -7,4 +7,6 @@ export { StatusAlert } from "./StatusAlert/StatusAlert";
 export { PaymentPersonList } from "./PaymentPersonList/PaymentPersonList";
 export type { PaymentPerson } from "./PaymentPersonList/PaymentPersonList";
 export { PaymentSummary } from "./PaymentSummary/PaymentSummary";
+export { ConfirmationActions } from "./ConfirmationActions/ConfirmationActions";
+export { BillDetailsCard } from "./BillDetailsCard/BillDetailsCard";
 

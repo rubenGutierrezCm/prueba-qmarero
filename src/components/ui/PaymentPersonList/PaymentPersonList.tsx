@@ -29,11 +29,11 @@ export interface PaymentPerson {
 /**
  * Props for the PaymentPersonList component
  */
-interface PaymentPersonListProps {
+interface PaymentPersonListProps<T extends PaymentPerson = PaymentPerson> {
   /** List of people */
-  people: PaymentPerson[];
+  people: T[];
   /** Function to get the payment amount for each person */
-  getAmount: (person: PaymentPerson) => number;
+  getAmount: (person: T) => number;
   /** Currency code */
   currency: string;
   /** Translation key for the title (e.g., 'payment.peopleWillReceive') */
@@ -42,13 +42,13 @@ interface PaymentPersonListProps {
   amountLabelKey?: string;
 }
 
-export const PaymentPersonList = ({
+export const PaymentPersonList = <T extends PaymentPerson = PaymentPerson>({
   people,
   getAmount,
   currency,
   titleKey,
   amountLabelKey = 'equal.amountToPay',
-}: PaymentPersonListProps) => {
+}: PaymentPersonListProps<T>) => {
   const { t } = useTranslation();
 
   return (

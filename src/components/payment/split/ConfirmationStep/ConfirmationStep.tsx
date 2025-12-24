@@ -9,14 +9,10 @@ import {
   Box,
   Paper,
   Typography,
-  Button,
   Divider,
-  CircularProgress,
 } from "@mui/material";
-import { PaymentPersonList } from "@/components/ui";
-import { PersonSplit } from "@/types/bill";
-import { Bill } from "@/types/bill";
-import { StatusAlert, StepNavigation } from "@/components/ui";
+import { PaymentPersonList, ConfirmationActions, StatusAlert } from "@/components/ui";
+import { PersonSplit, Bill } from "@/types/bill";
 import { processMultiplePayments, PaymentProduct } from "@/lib/paymentService";
 import { WarningBox } from "@/components/Shared";
 import { useTranslation } from 'react-i18next';
@@ -126,33 +122,12 @@ export const ConfirmationStep = ({
           successMessage={t('payment.emailsSentSuccess')}
         />
 
-        <Box
-          display="flex"
-          gap={2}
-          justifyContent="space-between"
-        >
-          <Button
-            variant="outlined"
-            onClick={onBack}
-            disabled={loading || success}
-          >
-            {t('common.back')}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleConfirmAndSendEmails}
-            disabled={loading || success}
-          >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : success ? (
-              `✓ ${t('common.sent')}`
-            ) : (
-              t('common.confirm')
-            )}
-          </Button>
-        </Box>
+        <ConfirmationActions
+          onBack={onBack}
+          onConfirm={handleConfirmAndSendEmails}
+          loading={loading}
+          success={success}
+        />
     </Box>
   );
 };
