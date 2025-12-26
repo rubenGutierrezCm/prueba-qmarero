@@ -35,7 +35,17 @@ const translations: Record<string, Record<string, string>> = {
     payNow: "💳 Pagar Ahora",
     note: "<strong>Nota:</strong> Este enlace es único y personal. Haz clic en el botón para completar tu pago de forma segura.",
     servedBy: "Atendido por:",
-    footer: "© 2025 Qmarero - Sistema de división de cuentas"
+    footer: "© 2025 Qmarero - Sistema de división de cuentas",
+    // Confirmation email
+    confirmationTitle: "Confirmación de Pago",
+    paymentSuccessful: "¡Tu pago ha sido procesado exitosamente!",
+    paymentConfirmedMessage: "Confirmamos que hemos recibido tu pago de <strong>{tableName}</strong> (Mesa {tableId}).",
+    paymentDetails: "Detalles del pago:",
+    paidProducts: "Productos pagados:",
+    totalPaid: "Total pagado:",
+    paymentDate: "Fecha de pago:",
+    transactionId: "ID de transacción:",
+    thankYou: "Gracias por venir. ¡Esperamos verte pronto!"
   },
   en: {
     title: "Payment Request",
@@ -50,7 +60,17 @@ const translations: Record<string, Record<string, string>> = {
     payNow: "💳 Pay Now",
     note: "<strong>Note:</strong> This link is unique and personal. Click the button to complete your payment securely.",
     servedBy: "Served by:",
-    footer: "© 2025 Qmarero - Bill splitting system"
+    footer: "© 2025 Qmarero - Bill splitting system",
+    // Confirmation email
+    confirmationTitle: "Payment Confirmation",
+    paymentSuccessful: "Your payment has been processed successfully!",
+    paymentConfirmedMessage: "We confirm that we have received your payment from <strong>{tableName}</strong> (Table {tableId}).",
+    paymentDetails: "Payment details:",
+    paidProducts: "Paid products:",
+    totalPaid: "Total paid:",
+    paymentDate: "Payment date:",
+    transactionId: "Transaction ID:",
+    thankYou: "Thank you for your payment. We hope to see you soon!"
   },
   fr: {
     title: "Demande de Paiement",
@@ -65,7 +85,17 @@ const translations: Record<string, Record<string, string>> = {
     payNow: "💳 Payer Maintenant",
     note: "<strong>Note:</strong> Ce lien est unique et personnel. Cliquez sur le bouton pour effectuer votre paiement en toute sécurité.",
     servedBy: "Servi par:",
-    footer: "© 2025 Qmarero - Système de division d'addition"
+    footer: "© 2025 Qmarero - Système de division d'addition",
+    // Confirmation email
+    confirmationTitle: "Confirmation de Paiement",
+    paymentSuccessful: "Votre paiement a été traité avec succès!",
+    paymentConfirmedMessage: "Nous confirmons que nous avons reçu votre paiement de <strong>{tableName}</strong> (Table {tableId}).",
+    paymentDetails: "Détails du paiement:",
+    paidProducts: "Produits payés:",
+    totalPaid: "Total payé:",
+    paymentDate: "Date de paiement:",
+    transactionId: "ID de transaction:",
+    thankYou: "Merci pour votre paiement. Nous espérons vous revoir bientôt!"
   }
 };
 
@@ -148,6 +178,121 @@ export const generatePaymentEmail = (params: EmailTemplateParams): string => {
           <p style="font-size: 14px; color: #666; margin-top: 30px;">
             ${t.note}
           </p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #999; font-size: 12px;">
+            <p>${t.servedBy} ${server}</p>
+            <p>${t.footer}</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+};
+
+interface ConfirmationEmailParams {
+  personName: string;
+  personEmail: string;
+  tableName: string;
+  tableId: string;
+  server: string;
+  products: Array<{
+    name: string;
+    quantity: number;
+    unitPrice: number;
+    subtotal: number;
+  }>;
+  total: number;
+  currency: string;
+  transactionId: string;
+  paidAt: string;
+  language?: string;
+}
+
+export const generateConfirmationEmail = (params: ConfirmationEmailParams): string => {
+  const {
+    personName,
+    tableName,
+    tableId,
+    server,
+    products,
+    total,
+    currency,
+    transactionId,
+    paidAt,
+    language = 'es',
+  } = params;
+
+  const t = translations[language] || translations.es;
+  const confirmMessage = t.paymentConfirmedMessage.replace('{tableName}', tableName).replace('{tableId}', tableId);
+
+  const productsHtml = products
+    .map(
+      (product) => `
+    <tr>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;">${product.name}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${product.quantity}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">${product.unitPrice.toFixed(2)} ${currency}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">${product.subtotal.toFixed(2)} ${currency}</td>
+    </tr>
+  `
+    )
+    .join("");
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>${t.confirmationTitle} - Qmarero</title>
+      </head>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">Qmarero</h1>
+          <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">${t.confirmationTitle}</p>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+          
+          <h2 style="color: #667eea; margin-top: 0; text-align: center;">${t.paymentSuccessful}</h2>
+          
+          <p style="font-size: 16px;">${t.hello} ${personName},</p>
+          <p style="font-size: 16px;">${confirmMessage}</p>
+          
+          <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+              <p style="margin: 5px 0; font-size: 14px;"><strong>${t.transactionId}</strong></p>
+              <p style="margin: 5px 0; color: #667eea; font-family: monospace;">${transactionId}</p>
+              <p style="margin: 15px 0 5px 0; font-size: 14px;"><strong>${t.paymentDate}</strong></p>
+              <p style="margin: 5px 0; color: #666;">${paidAt}</p>
+            </div>
+
+            <h3 style="margin-top: 0; color: #667eea;">${t.paidProducts}</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #f5f5f5;">
+                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">${t.product}</th>
+                  <th style="padding: 10px; text-align: center; border-bottom: 2px solid #667eea;">${t.quantity}</th>
+                  <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">${t.price}</th>
+                  <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">${t.subtotal}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${productsHtml}
+              </tbody>
+            </table>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #667eea; text-align: right;">
+              <p style="margin: 0; font-size: 20px;">
+                <strong>${t.totalPaid}</strong> 
+                <span style="color: #667eea; font-size: 24px;">${total.toFixed(2)} ${currency}</span>
+              </p>
+            </div>
+          </div>
+          
+          <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%); padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center; border: 2px solid rgba(102, 126, 234, 0.3);">
+            <p style="margin: 0; color: #667eea; font-size: 18px; font-weight: bold;">
+              ✓ ${t.thankYou}
+            </p>
+          </div>
           
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #999; font-size: 12px;">
             <p>${t.servedBy} ${server}</p>

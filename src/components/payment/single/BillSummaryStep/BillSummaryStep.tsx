@@ -96,7 +96,10 @@ export const BillSummaryStep = () => {
 
       {/* Navigation */}
       <ConfirmationActions
-        onBack={() => router.push("/")}
+        onBack={() => {
+          const code = localStorage.getItem('currentTicketCode');
+          router.push(code ? `/${code}` : '/');
+        }}
         onConfirm={handleSubmit(onSubmit)}
         loading={loading}
         success={success}

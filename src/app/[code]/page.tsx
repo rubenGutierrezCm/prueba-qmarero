@@ -8,12 +8,20 @@ import { Box, Button, Typography, Stack } from "@mui/material";
 import { useRouter, useParams } from "next/navigation";
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitch } from "@/components/Shared";
+import { useEffect } from "react";
 
 export default function PaymentOptions() {
   const router = useRouter();
   const params = useParams();
   const { t } = useTranslation();
   const code = params.code as string;
+
+  // Save the code to localStorage when this page loads
+  useEffect(() => {
+    if (code) {
+      localStorage.setItem('currentTicketCode', code);
+    }
+  }, [code]);
 
   const handleChangeRoute = (url: string) => {
     router.push(url);
@@ -59,16 +67,6 @@ export default function PaymentOptions() {
           sx={{ mb: 1 }}
         >
           {t('home.subtitle')}
-        </Typography>
-
-        {/* Show table code */}
-        <Typography
-          variant="caption"
-          align="center"
-          color="text.secondary"
-          sx={{ mb: 3, display: "block" }}
-        >
-          {t('home.tableCode')}: <strong>{code}</strong>
         </Typography>
 
         <Stack spacing={2}>

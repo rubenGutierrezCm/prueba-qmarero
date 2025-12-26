@@ -1,9 +1,9 @@
 {
   "home": {
     "welcomeTitle": "Bienvenue chez QMarero",
-    "welcomeSubtitle": "Entrez le code-barres de votre table pour commencer",
-    "barcodeLabel": "Code-barres de la table",
-    "barcodePlaceholder": "Ex: TABLE-001",
+    "welcomeSubtitle": "Entrez le code-barres du ticket d'achat pour commencer",
+    "barcodeLabel": "Code-barres du ticket d'achat",
+    "barcodePlaceholder": "Ex: TICKET-001",
     "barcodeRequired": "Le code-barres est obligatoire",
     "continueButton": "Continuer",
     "tableCode": "Table",

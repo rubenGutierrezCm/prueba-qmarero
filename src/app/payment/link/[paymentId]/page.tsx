@@ -5,7 +5,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
   Container,
   Paper,
@@ -22,10 +22,11 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { getPayment, markPaymentAsPaid } from "@/lib/indexeddb";
+import { getPayment, markPaymentAsPaid, loadSession } from "@/lib/indexeddb";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { LoadingButton, StatusAlert } from "@/components/ui";
 import { useTranslation } from 'react-i18next';
+import { generateConfirmationEmail } from "@/lib/emailTemplate";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
@@ -59,7 +60,7 @@ const PaymentFormContent = ({
   clientSecret: string;
   onSuccess: () => void;
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -90,6 +91,46 @@ const PaymentFormContent = ({
       } else if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
         // Mark as paid in IndexedDB
         await markPaymentAsPaid(paymentData.paymentId, result.paymentIntent.id);
+        
+        // Send confirmation email
+        try {
+          const session = await loadSession(paymentData.sessionId);
+          
+          if (session) {
+            const confirmationHtml = generateConfirmationEmail({
+              personName: paymentData.personName,
+              personEmail: paymentData.personEmail,
+              tableName: session.bill.table.name,
+              tableId: session.bill.table.id,
+              server: session.bill.table.server,
+              products: paymentData.products.map(p => ({
+                name: p.itemName,
+                quantity: p.quantity,
+                unitPrice: p.unitPrice,
+                subtotal: p.unitPrice * p.quantity,
+              })),
+              total: paymentData.amount,
+              currency: paymentData.currency,
+              transactionId: result.paymentIntent.id,
+              paidAt: new Date().toLocaleString(),
+              language: i18n.language,
+            });
+
+            await fetch("/api/send-email", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                to: paymentData.personEmail,
+                subject: "✅ Confirmación de Pago - QMarero",
+                html: confirmationHtml,
+              }),
+            });
+          }
+        } catch (emailError) {
+          console.error("Error sending confirmation email:", emailError);
+          // Don't fail the payment if email fails
+        }
+        
         onSuccess();
       } else {
         setLoading(false);
@@ -122,7 +163,6 @@ const PaymentFormContent = ({
 export default function PaymentLinkPage() {
   const { t } = useTranslation();
   const params = useParams();
-  const router = useRouter();
   const paymentId = params.paymentId as string;
 
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
@@ -180,9 +220,6 @@ export default function PaymentLinkPage() {
 
   const handlePaymentSuccess = () => {
     setPaymentSuccess(true);
-    setTimeout(() => {
-      router.push("/payment/success");
-    }, 3000);
   };
 
   if (loading) {
@@ -208,8 +245,16 @@ export default function PaymentLinkPage() {
 
   if (paymentSuccess && paymentData) {
     return (
-      <Container maxWidth="md" sx={{ py: 8 }}>
-        <Paper elevation={2} sx={{ p: 4, textAlign: "center" }}>
+      <Container 
+        maxWidth="md" 
+        sx={{ 
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <Paper elevation={0} sx={{ p: 4, textAlign: "center" }}>
           <CheckCircleIcon sx={{ fontSize: 80, color: "success.main", mb: 2 }} />
           <Typography variant="h4" gutterBottom>
             {t('success.title')}
@@ -233,18 +278,12 @@ export default function PaymentLinkPage() {
 
   return (
     <Container maxWidth="md" sx={{ py: { xs: 2, sm: 4 } }}>
-      <Paper elevation={2} sx={{ p: { xs: 2, sm: 4 } }}>
-        <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
+        <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', sm: '2rem' }, mt: 3, textAlign: "center", fontWeight: "bold" }}>
           {t('payment.fullBillPayment')}
         </Typography>
-        <Typography variant="body1" color="text.secondary" mb={3}>
-          {t('payment.yourInfo')}
-        </Typography>
-
-        <Divider sx={{ my: 3 }} />
 
         {/* Payment details */}
-        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, mb: 3, bgcolor: "background.default" }}>
+        <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, mb: 3, mt: 3, bgcolor: "background.default" }}>
           <Typography variant="h6" gutterBottom>
             {t('payment.finalSummary')}
           </Typography>
@@ -300,7 +339,6 @@ export default function PaymentLinkPage() {
             onSuccess={handlePaymentSuccess}
           />
         </Elements>
-      </Paper>
     </Container>
   );
 }

@@ -1,9 +1,9 @@
 {
   "home": {
     "welcomeTitle": "Welcome to QMarero",
-    "welcomeSubtitle": "Enter your table barcode to get started",
-    "barcodeLabel": "Table barcode",
-    "barcodePlaceholder": "E.g: TABLE-001",
+    "welcomeSubtitle": "Enter the purchase receipt barcode to get started",
+    "barcodeLabel": "Purchase receipt barcode",
+    "barcodePlaceholder": "E.g: TICKET-001",
     "barcodeRequired": "Barcode is required",
     "continueButton": "Continue",
     "tableCode": "Table",

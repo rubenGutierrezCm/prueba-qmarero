@@ -33,6 +33,11 @@ export const PeopleStep = ({
 }: PeopleStepProps) => {
   const router = useRouter();
   
+  const handleBack = () => {
+    const code = localStorage.getItem('currentTicketCode');
+    router.push(code ? `/${code}` : '/');
+  };
+  
   return (
     <Box>
       <PeopleListManager
@@ -42,7 +47,7 @@ export const PeopleStep = ({
       />
       
       <StepNavigation
-        onBack={() => router.push('/')}
+        onBack={handleBack}
         onContinue={onContinue}
         continueDisabled={people.length === 0}
       />
