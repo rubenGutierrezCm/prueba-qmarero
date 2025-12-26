@@ -30,7 +30,7 @@
     "addPerson": "Ajouter une personne",
     "noPeopleAdded": "Aucune personne ajoutée",
     "addPeopleDescription": "Ajoutez les personnes qui partageront l'addition",
-    "totalPeople": "Total : {{count}} personnes",
+    "totalPeople": "N° de personnes",
     "fullName": "Nom complet",
     "email": "Adresse e-mail",
     "mustAddFirst": "Vous devez d'abord ajouter des personnes"
